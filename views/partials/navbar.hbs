@@ -1,87 +1,112 @@
-<div class="d-flex justify-content-between align-items-center mt-3 mb-5">
-    <div class="d-flex gap-4">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
         <a class="navbar-brand" href="/" title="home">
             <img src="../images/ccs-logo.png" alt="" class="logo">
         </a>
 
-        <div class="d-flex align-items-center gap-2 text-white" style="overflow-x: auto;">
-            <a href="/" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;">Home</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"><i class="bi bi-list text-white fs-1"></i></button>
+    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav align-items-lg-center">
+            <li class="nav-item">
+            <a href="/" class="nav-link text-white">Home</a>
+            </li>
             {{#if user}}
-                <a href="/dashboard" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;">Dashboard</a>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link text-white">Dashboard</a>
+                </li>
             {{/if}}
-            <a href="/articles" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;">Articles</a>
-            <a href="/faqs" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;">FAQ</a>
-            {{!-- <a href="/downloadable-forms" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;">Forms</a> --}}
-            <a href="/" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;" title="Underconstruction">CES</a>
-            <a href="/" class="text-white text-decoration-none secondary-bg-color rounded-pill" style="padding: .5rem 1rem;" title="Underconstruction">ICSO</a>
-            <a href="/" class="text-white text-decoration-none secondary-bg-color rounded-pill text-nowrap" style="padding: .5rem 1rem;" title="Underconstruction">CCS Tech Guild</a>
+            <li class="nav-item">
+                <a href="/articles" class="nav-link text-white">Articles</a>
+            </li>
+            <li class="nav-item">
+                <a href="/faqs" class="nav-link text-white">FAQ</a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link text-white" title="Underconstruction">CES</a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link text-white" title="Underconstruction">ICSO</a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link text-white text-nowrap" title="Underconstruction">CCS Tech Guild</a>
+            </li>
+            <li class="nav-item">
+                {{#if user}}
+                    <div class="dropdown">
+                        <button class="border-0 bg-transparent text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear fs-2"></i>
+                        </button>
+                        <ul class="dropdown-menu secondary-bg-color">
+                            <li>
+                                <form action="/logout?_method=DELETE" method="POST">
+                                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    {{!-- <button type="button" class="border-0 bg-transparent text-white" data-bs-toggle="dropdown"><i class="bi bi-gear fs-2"></i></button>
+                    <ul class="dropdown-menu secondary-bg-color">
+                        <li>
+                            <form action="/logout?_method=DELETE" method="POST">
+                                <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
+                            </form>
+                        </li>
+                    </ul> --}}
+                {{else}}
+                    <button type="button" class="border-0 bg-transparent text-white" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="bi bi-box-arrow-in-right fs-2"></i></button>
+                    <div class="modal fade mt-5" id="loginModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body primary-bg-color rounded">
+                                    <form action="/login" id="loginForm" method="POST">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control border-0" id="loginUsername" name="username" placeholder="username" required>
+                                            <label for="loginUsername" class="text-white">Username</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control border-0" id="loginPassword" name="password" placeholder="password" required>
+                                            <label for="loginPassword" class="text-white">Password</label>
+                                        </div>
+                                        <div class="d-flex justify-content-around">
+                                            <button type="submit" class="btn btn-sm btn-dark">Login</button>
+                                            <button type="button" class="btn btn-sm btn-dark">Sign Up</button>
+                                        </div>
+                                    </form>
+
+                                    <form action="/register" id="registerForm" method="POST">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control border-0" id="registerFirstname" name="firstname" placeholder="firstname" required>
+                                            <label for="registerFirstname" class="text-white">Firstname</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control border-0" id="registerLastname" name="lastname" placeholder="lastname" required>
+                                            <label for="registerLastname" class="text-white">Lastname</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control border-0" id="registerIdNumber" name="idNumber" placeholder="idNumber" required>
+                                            <label for="registerIdNumber" class="text-white">ID No.</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control border-0" id="registerUsername" name="username" placeholder="username" required>
+                                            <label for="loginUsername" class="text-white">Username</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control border-0" class="form-control" id="registerPassword" name="password" placeholder="password" required>
+                                            <label for="loginPassword" class="text-white">Password</label>
+                                        </div>
+                                        <div class="d-flex justify-content-around">                          
+                                            <button type="submit" class="btn btn-sm btn-dark" id="registerSubmitBtn">Sign Up</button>
+                                            <button type="button" class="btn btn-sm btn-dark">Login Instead</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{/if}}
+
+            </li>
         </div>
     </div>
-
-    {{#if user}}
-        <button type="button" class="border-0 bg-transparent text-white" data-bs-toggle="dropdown"><i class="bi bi-gear fs-2"></i></button>
-        <ul class="dropdown-menu secondary-bg-color">
-            <li>
-                <form action="/logout?_method=DELETE" method="POST">
-                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
-                </form>
-                {{!-- <a href="/logout">Logout</a> --}}
-            </li>
-        </ul>
-    {{else}}
-        <button type="button" class="border-0 bg-transparent text-white" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="bi bi-box-arrow-in-right fs-2"></i></button>
-        <div class="modal fade mt-5" id="loginModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body primary-bg-color rounded">
-                        <form action="/login" id="loginForm" method="POST">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control border-0" id="loginUsername" name="username" placeholder="username" required>
-                                <label for="loginUsername" class="text-white">Username</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control border-0" id="loginPassword" name="password" placeholder="password" required>
-                                <label for="loginPassword" class="text-white">Password</label>
-                            </div>
-                            <div class="d-flex justify-content-around">
-                                <button type="submit" class="btn btn-sm btn-dark">Login</button>
-                                <button type="button" class="btn btn-sm btn-dark">Sign Up</button>
-                            </div>
-                        </form>
-
-                        <form action="/register" id="registerForm" method="POST">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control border-0" id="registerFirstname" name="firstname" placeholder="firstname" required>
-                                <label for="registerFirstname" class="text-white">Firstname</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control border-0" id="registerLastname" name="lastname" placeholder="lastname" required>
-                                <label for="registerLastname" class="text-white">Lastname</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control border-0" id="registerIdNumber" name="idNumber" placeholder="idNumber" required>
-                                <label for="registerIdNumber" class="text-white">ID No.</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control border-0" id="registerUsername" name="username" placeholder="username" required>
-                                <label for="loginUsername" class="text-white">Username</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control border-0" class="form-control" id="registerPassword" name="password" placeholder="password" required>
-                                <label for="loginPassword" class="text-white">Password</label>
-                            </div>
-                            <div class="d-flex justify-content-around">                          
-                                <button type="submit" class="btn btn-sm btn-dark" id="registerSubmitBtn">Sign Up</button>
-                                <button type="button" class="btn btn-sm btn-dark">Login Instead</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {{/if}}
-
-</div>
-
-
-
+</nav>

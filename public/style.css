@@ -1,11 +1,8 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poppins&display=swap');
 
 body { font-family: 'Poppins', sans-serif; }
-/* body { font-family: 'Raleway', sans-serif; } */
 
 .navbar { font-family: 'Poppins', sans-serif; }
-/* .navbar { font-family: 'Raleway', sans-serif; } */
 
 .loaderLogo {
   /* border: 1px solid red; */
@@ -65,9 +62,10 @@ textarea { resize: none; }
   width: 100%;
 }
 
+.quote { font-family: 'Caveat', cursive; }
 
-.box-container {
-  /* border: 1px solid red; */
+
+/* .box-container {
   width: 20em;
   height: 20em;
 }
@@ -90,7 +88,6 @@ textarea { resize: none; }
 }
 
 .front {
-  /* border: 1px solid red; */
   width: 20em;
   height: 20em;
   background: no-repeat center/100% url(../images/icct-logo.png);
@@ -99,7 +96,6 @@ textarea { resize: none; }
 }
 
 .back {
-  /* border: 1px solid yellow; */
   width: 20em;
   height: 20em;
   transform: rotateY(180deg);
@@ -108,7 +104,6 @@ textarea { resize: none; }
 }
 
 .first, .second, .third {
-  /* border: 1px solid green; */
   width: 10em;
   height: 10em;
 }
@@ -128,4 +123,4 @@ textarea { resize: none; }
 
 .third {
   background: no-repeat center/85% url(../images/icso-logo.png);
-}
+} */

@@ -65,7 +65,7 @@ app.use(function (req, res, next) {
     res.locals.success_msg = req.flash("success_msg");
     res.locals.error_msg = req.flash("error_msg");
     res.locals.error = req.flash("error");
-    res.locals.success = req.flash("success");
+    // res.locals.success = req.flash("success");
     next()
 });
 
@@ -91,7 +91,7 @@ app.post("/login", (req, res, next) => {
     passport.authenticate("local", {
         successRedirect: "/dashboard",
         failureRedirect: "/",
-        successFlash: true,
+        // successFlash: true,
         failureFlash: true
     })(req, res, next);
 });
@@ -133,17 +133,25 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
                             return `<button type="button" class="btn btn-sm btn-warning" disabled>You are now on the list</button>`;
                         }
                     },
-                    listofReservers(reservers, eventID) {
+                    listofReservers(reservers, currentUserID, eventID) {                        
                         return reservers.map(reserver => {
-                            return `
-                                <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
-                                    ${reserver.firstname} ${reserver.lastname}
-                                    <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
-                                        <input type="hidden" name="userID" value="${reserver._id}">
-                                        <button type="submit" class="badge bg-danger border-0">Cancel Reservation</button>
-                                    </form>
-                                </li>
-                            `
+                            if (reserver._id.toString() === currentUserID.toString()) {
+                                return `
+                                    <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
+                                        ${reserver.firstname} ${reserver.lastname}
+                                        <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
+                                            <input type="hidden" name="userID" value="${reserver._id}">
+                                            <button type="submit" class="badge bg-danger border-0">Cancel Reservation</button>
+                                        </form>
+                                    </li>
+                                `;
+                            } else {
+                                return `
+                                    <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
+                                        ${reserver.firstname} ${reserver.lastname}
+                                    </li>
+                                `;
+                            }
                         }).join("");
                     }
                 }
@@ -205,8 +213,6 @@ app.put("/event/:id/reserver", async (req, res, next) => {
         }, { new: true });
         req.flash("success_msg", "You successfully reserved a seat")
         res.redirect("/dashboard");
-        return;
-        // }
     } catch(err) { next(err) }
 });
 
