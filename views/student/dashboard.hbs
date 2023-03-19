@@ -4,39 +4,56 @@
 
 <div class="row gap-5">
     {{#each events}}
-        <div class="secondary-bg-color p-4 rounded col-sm-5">
+        <div class="secondary-bg-color p-4 rounded col-lg-5">
             <div class="d-flex justify-content-end">
-                <span class="badge bg-success">Ongoing Reservation</span>
+                {{!-- <span class="badge bg-success">Ongoing Reservation</span> --}}
+                {{{reservationStatus this.reservers}}}
             </div>
             <br>
             <div style="height: 6rem;">
                 <h4>{{this.title}}</h4>
                 <p>{{this.description}}</p>
-                <p>{{formatDate this.date}}</p>
+                <p>{{formatDate this.date}} | {{formatTime this.time}}</p>
             </div>
-            <div class="mt-5 d-flex gap-3">
-                {{{isCurrentUserReserved this.reservers this.userID this._id}}}
+            <div class="mt-5 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3">
+                    {{{isCurrentUserReserved this.reservers this.userID this._id}}}
 
-                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detail{{this._id}}Modal">
-                    Details
-                </button>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detail{{this._id}}Modal">
+                        Details
+                    </button>
 
-                <div class="modal fade" id="detail{{this._id}}Modal" tabindex="-1" aria-labelledby="detail{{this._id}}ModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content primary-bg-color">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="detail{{this._id}}ModalLabel">Reservers</h1>
-                                <p>{{this.reservers.length}} / 80</p>
-                            </div>
-                            <div class="modal-body">
-                                <ul class="list-group gap-2">
-                                    {{{listofReservers this.reservers this.userID this._id}}}
-                                </ul>
+                    <div class="modal fade" id="detail{{this._id}}Modal" tabindex="-1" aria-labelledby="detail{{this._id}}ModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content primary-bg-color">
+                                <div class="modal-header border-0 p-0 d-flex justify-content-end">
+                                    {{!-- <h1 class="modal-title fs-5" id="detail{{this._id}}ModalLabel">Reservers</h1> --}}
+                                    <button type="button" class="btn p-0" data-bs-dismiss="modal"><i class="bi bi-x text-white fs-1"></i></button>
+                                    {{!-- <p>{{this.reservers.length}} / 60</p> --}}
+                                </div>
+                                <div class="modal-body">
+                                    <h3 class="fw-bolder">{{this.title}}</h3>
+                                    <p>Venue: ICCT Cainta Campus (Room {{this.room}})</p>
+                                    <p>{{this.description}}</p>
+                                    <p>{{this.rationale}}</p>
+                                    <br>
+                                    <h5 class="fw-bold">Objectives</h5>
+                                    <p>{{{formatToList this.objectives}}}</p>
+                                    {{!-- <p>{{this.objectives}}</p> --}}
+                                    <br>
+                                    <h5 class="fw-bold">Guidelines</h5>
+                                    <p>{{{formatToList this.guidelines}}}</p>
+                                    <hr>
+                                    <p class="text-end">Room {{this.reservers.length}} / 60</p>
+                                    <ul class="list-group gap-2">
+                                        {{{listofReservers this.reservers this.userID this._id}}}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                <span ><i class="bi bi-people-fill"></i> {{this.reservers.length}} / 60</span>
             </div>
         </div>
     {{/each}}

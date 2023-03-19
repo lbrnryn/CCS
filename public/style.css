@@ -32,11 +32,12 @@ body { font-family: 'Poppins', sans-serif; }
 .primary-bg-color { background-color: #0d1117; }
 .secondary-bg-color { background-color: #161b22; }
 
-input[type="text"], input[type="password"], textarea#body, textarea#codes, textarea#description {
+input[type="text"], input[type="password"], input[type="date"], input[type="time"], textarea#body, textarea#codes, textarea#description, textarea#room, textarea#rationale, textarea#objectives, textarea#guidelines {
+/* input[type="text"], input[type="password"], textarea { */
   background-color: #161b22;
   color: white;
 }
-input[type="text"]:focus, input[type="password"]:focus, textarea#body:focus, textarea#codes, textarea#description {
+input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea#body:focus, textarea#codes, textarea#description {
   background-color: #161b22;
   color: white;
 }

@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-center">
+    <form action="/profile?_method=PUT" method="post" class="d-grid gap-2">
+        <div>
+            <label for="idNumber" class="form-label">ID No.</label>
+            <input type="text" class="form-control form-control" id="idNumber" name="idNumber" value="{{user.idNumber}}">
+        </div>
+        <div>
+            <label for="firstname" class="form-label">Firstname</label>
+            <input type="text" class="form-control form-control-sm" id="firstname" name="firstname" value="{{user.firstname}}">
+        </div>
+        <div>
+            <label for="lastname" class="form-label">Lastname</label>
+            <input type="text" class="form-control form-control-sm" id="lastname" name="lastname" value="{{user.lastname}}">
+        </div>
+        <div>
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control form-control-sm" id="username" name="username" value="{{user.username}}">
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+    </form>
+</div>

@@ -11,6 +11,7 @@ require("./passport")(passport);
 const methodOverride = require("method-override");
 const url = require("url");
 require("dotenv").config();
+const { reservationStatusHelper, formatDateHelper, formatTimeHelper, isCurrentUserReservedHelper, listofReserversHelper, formatToListHelper } = require("./templateHelper");
 
 // Models
 const User = require("./models/User");
@@ -44,6 +45,7 @@ app.use(session({
     cookie: { maxAge: 60000 },
     store: new MongoDBStore({
         uri: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ccs",
+        // uri: "mongodb://127.0.0.1:27017/ccs",
         collection: "sessions"
     })
 }));
@@ -68,6 +70,11 @@ app.use(function (req, res, next) {
     // res.locals.success = req.flash("success");
     next()
 });
+
+app.get("/api/users", async (req, res) => {
+    const user = await User.findOne(req.query);
+    res.json(user)
+})
 
 app.get("/", async (req, res, next) => {
     try {
@@ -103,63 +110,60 @@ app.delete("/logout", (req, res, next) => {
     res.redirect("/");
 });
 
+app.get("/profile", checkAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).lean();
+        // console.log(user)
+        res.render("profile", { user });
+    } catch(err) { next(err) }
+});
+
+app.put("/profile", checkAuthenticated, async (req, res) => {
+    try {
+        const updUser = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+        // console.log(updUser);
+        req.flash("success_msg", "Profile has been updated");
+        res.redirect("/profile");
+    } catch(err) { next(err) }
+});
+
 app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
+// app.get("/dashboard", async (req, res, next) => {
     try {
         if (req.user.role === "student") {
             const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
             events.forEach(event => event.userID = req.user._id);
+            // events.forEach(event => event.userID = "64108c29baa28ce45b57c7bf");
             res.render("student/dashboard", {
                 user: req.user,
                 events,
                 helpers: {
+                    reservationStatus(reservers) {
+                        return reservationStatusHelper(reservers)
+                    },
                     formatDate(date) {
-                        const dateTime = new Date(date);
-                        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                        const formattedDateandTime = `${months[dateTime.getMonth()]} ${dateTime.getDate()}, ${dateTime.getFullYear()} | ${dateTime.getHours() > 12 ? dateTime.getHours() - 12 : dateTime.getHours()}:${dateTime.getMinutes() === 0? `0${dateTime.getMinutes()}` : dateTime.getMinutes()} ${dateTime.getHours() < 12 ? "am" : "pm"}`;
-                        return formattedDateandTime
+                        return formatDateHelper(date)
+                    },
+                    formatTime(time) {
+                        return formatTimeHelper(time)
                     },
                     isCurrentUserReserved(reservers, currentUserID, eventID) {
-                        const reserversIDs = reservers.map(reserver => reserver._id);
-                        const isIDinArray = reserversIDs.some(id => id.toString() === currentUserID.toString());
-
-                        if (!isIDinArray) {
-                            return `
-                            <form action="/event/${eventID}/reserver?_method=PUT" method="post">
-                                <input type="hidden" name="userID" value="${currentUserID}">
-                                <button type="submit" class="btn btn-sm btn-warning">Reserved a seat</button>
-                            </form>
-                            `;
-                        } else {
-                            return `<button type="button" class="btn btn-sm btn-warning" disabled>You are now on the list</button>`;
-                        }
+                        return isCurrentUserReservedHelper(reservers, currentUserID, eventID)
                     },
-                    listofReservers(reservers, currentUserID, eventID) {                        
-                        return reservers.map(reserver => {
-                            if (reserver._id.toString() === currentUserID.toString()) {
-                                return `
-                                    <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
-                                        ${reserver.firstname} ${reserver.lastname}
-                                        <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
-                                            <input type="hidden" name="userID" value="${reserver._id}">
-                                            <button type="submit" class="badge bg-danger border-0">Cancel Reservation</button>
-                                        </form>
-                                    </li>
-                                `;
-                            } else {
-                                return `
-                                    <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
-                                        ${reserver.firstname} ${reserver.lastname}
-                                    </li>
-                                `;
-                            }
-                        }).join("");
+                    listofReservers(reservers, currentUserID, eventID) {
+                        return listofReserversHelper({ reservers, currentUserID, eventID })
+                    },
+                    formatToList(paragraph) {
+                        return formatToListHelper(paragraph)
                     }
                 }
             });
         } else {
             const events = await Event.find().sort({ date: -1 }).lean();
+            events.forEach(event => event.url = `http://localhost:1000/api/event/${event._id}`);
             const user = await User.findById(req.user._id);
             res.render("admin/dashboard", { user, events });
+            // res.render("admin/dashboard", { events });
         }
     } catch(err) { next(err) }
 
@@ -174,23 +178,7 @@ app.get("/event/:id", checkAuthenticated, async (req, res, next) => {
             event,
             helpers: {
                 listofReservers(reservers, eventID) {
-                    return reservers.map(reserver => {
-                        return `
-                            <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
-                                ${reserver.firstname} ${reserver.lastname}
-                                <div class="d-flex align-items-center">
-                                    <form action="/event/${eventID}/attendee?_method=PUT" method="post">
-                                        <input type="hidden" name="userID" value="${reserver._id}">
-                                        <button type="submit" class="btn btn-sm btn-primary">PRESENT</button>
-                                    </form>
-                                    <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
-                                        <input type="hidden" name="userID" value="${reserver._id}">
-                                        <button type="submit" class="btn text-danger p-0"><i class="bi bi-x fs-5"></i></button>
-                                    </form>
-                                </div>
-                            </li>
-                        `
-                    });
+                    return listofReserversHelper({ reservers, eventID })
                 }
             }
         });
@@ -202,6 +190,29 @@ app.post("/event", async (req, res, next) => {
         const event = await Event.create(req.body);
         res.redirect("/dashboard");
     } catch(err) { next(err) }
+});
+
+app.put("/event/:id", async (req, res) => {
+    try {
+        console.log(req.body.time)
+        console.log(typeof req.body.time)
+        const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.redirect("/dashboard");
+    } catch (err) { next(err) }
+});
+
+app.delete("/event/:id", async (req, res) => {
+    try {
+        await Event.findByIdAndDelete(req.params.id);
+        res.redirect("/dashboard");
+    } catch(err) { next(err) }
+});
+
+app.get("/api/event/:id", async (req, res, next) => {
+    try {
+        const event = await Event.findById(req.params.id);
+        res.json(event)
+    } catch (err) { next(err) }
 });
 
 // Add reservers in event
@@ -264,6 +275,7 @@ app.use((req, res, next) => {
   
 // Error handler middleware
 app.use((err, req, res, next) => {
+    console.log(err)
     if (err.status === 404) {
         res.status(err.status).render("error", { err });
         return;
