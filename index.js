@@ -160,7 +160,7 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
             });
         } else {
             const events = await Event.find().sort({ date: -1 }).lean();
-            events.forEach(event => event.url = `http://localhost:1000/api/event/${event._id}`);
+            events.forEach(event => event.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/event/${event._id}`: `https://ccs-icct-tech-guild.onrender.com/api/event/${event._id}`);
             const user = await User.findById(req.user._id);
             res.render("admin/dashboard", { user, events });
             // res.render("admin/dashboard", { events });
