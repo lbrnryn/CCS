@@ -131,7 +131,8 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
 // app.get("/dashboard", async (req, res, next) => {
     try {
         if (req.user.role === "student") {
-            const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
+            // const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
+            const events = await Event.find().populate("reservers").lean();
             events.forEach(event => event.userID = req.user._id);
             // events.forEach(event => event.userID = "64108c29baa28ce45b57c7bf");
             res.render("student/dashboard", {
