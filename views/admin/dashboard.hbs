@@ -44,6 +44,22 @@
         </form>
     </div>
 
+    <div class="col-sm">
+        <ul class="list-group gap-1">
+            {{#each events}}
+                <li class="list-group-item secondary-bg-color d-flex justify-content-between align-items-center">
+                    <a href="/event/{{this._id}}" class="text-decoration-none text-white">{{this.title}}</a>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn p-0 editEventBtn" data-url="{{this.url}}"><i class="bi bi-pencil-fill text-warning"></i></button>
+                        <form action="/event/{{this._id}}?_method=DELETE" class="deleteEventForm" method="post">
+                            <button type="submit" class="btn p-0"><i class="bi bi-trash3-fill text-danger"></i></button>
+                        </form>
+                    </div>
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+
     {{!-- <div class="col-sm">
         <h4>Create FAQs</h4>
         <form action="/faqs" method="post" class="d-grid gap-3">
@@ -60,7 +76,7 @@
     </div> --}}
 </div>
 
-<hr class="my-5">
+{{!-- <hr class="my-5">
 
 <ul class="list-group gap-1">
     {{#each events}}
@@ -74,7 +90,7 @@
             </div>
         </li>
     {{/each}}
-</ul>
+</ul> --}}
 
 
 {{!-- <div class="d-flex align-items-start gap-5">

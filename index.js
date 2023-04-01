@@ -32,7 +32,24 @@ app.use(express.urlencoded({ extended: true }));
 app.set("json spaces", 2);
 
 // Express handlebars setup
-app.engine(".hbs", engine({ extname: ".hbs" }));
+app.engine(".hbs", engine({
+    extname: ".hbs",
+    helpers: {
+        isAdmin(user) {
+            // console.log(user)
+            // console.log(user.role)
+            // console.log(user.role === "admin")
+            // return user.role === "admin"
+            if (user && user.role === "admin") {
+                return `
+                    <li class="nav-item">
+                        <a href="/users" class="nav-link text-white">Manage Users</a>
+                    </li>
+                `
+            }
+        }
+    }
+}));
 app.set("view engine", ".hbs")
 app.set("views", "./views");
 
@@ -62,6 +79,7 @@ const checkAuthenticated = require("./middleware.js");
 // Routers
 app.use("/faqs", require("./routes/faqs"));
 app.use("/articles", require("./routes/articles"));
+app.use("/event", require("./routes/event"));
 
 app.use(function (req, res, next) {
     res.locals.success_msg = req.flash("success_msg");
@@ -82,15 +100,32 @@ app.get("/", async (req, res, next) => {
     } catch(err) { next(err) }
 });
 
+app.get("/users", async (req, res, next) => {
+    try {
+        const users = await User.find().lean();
+        res.render("users", { users, user: req.user })
+    } catch(err) { next(err) }
+})
+
 // http://localhost:1000/register - POST - User registration
 app.post("/register", async (req, res, next) => {
     try {
         const { firstname, lastname, idNumber, username, password } = req.body;
-        const newUser = await User.create({
-            firstname, lastname, idNumber, username, password
-        });
-        req.flash("success_msg", "Successfully registered!");
-        res.redirect("/");
+        const isUsernameTaken = await User.findOne({ username: username });
+        const user = await User.findOne({ firstname: firstname, lastname: lastname });
+        if (isUsernameTaken) {
+            req.flash("error_msg", "Username is already taken");
+            res.redirect("/");
+        } else if (user) {
+            req.flash("error_msg", "You already have an account");
+            res.redirect("/");
+        } else {
+            const newUser = await User.create({
+                firstname, lastname, idNumber, username, password
+            });
+            req.flash("success_msg", "Successfully registered!");
+            res.redirect("/");
+        }
     } catch(err) { next(err) }
 });
 
@@ -128,8 +163,8 @@ app.put("/profile", checkAuthenticated, async (req, res) => {
 });
 
 app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
-// app.get("/dashboard", async (req, res, next) => {
     try {
+        // if (req.user.role === "student") {
         if (req.user.role === "student") {
             const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
             // const events = await Event.find().populate("reservers").lean();
@@ -170,93 +205,11 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
 
 });
 
-app.get("/event/:id", checkAuthenticated, async (req, res, next) => {
-    try {
-        const user = await User.findById(req.user._id);
-        const event = await Event.findById(req.params.id).populate("reservers").populate("attendees").lean();
-        res.render("event", {
-            user,
-            event,
-            helpers: {
-                listofReservers(reservers, eventID) {
-                    return listofReserversHelper({ reservers, eventID })
-                }
-            }
-        });
-    } catch (err) { next(err) }
-});
-
-app.post("/event", async (req, res, next) => {
-    try {
-        const event = await Event.create(req.body);
-        res.redirect("/dashboard");
-    } catch(err) { next(err) }
-});
-
-app.put("/event/:id", async (req, res) => {
-    try {
-        console.log(req.body.time)
-        console.log(typeof req.body.time)
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.redirect("/dashboard");
-    } catch (err) { next(err) }
-});
-
-app.delete("/event/:id", async (req, res) => {
-    try {
-        await Event.findByIdAndDelete(req.params.id);
-        res.redirect("/dashboard");
-    } catch(err) { next(err) }
-});
-
 app.get("/api/event/:id", async (req, res, next) => {
     try {
         const event = await Event.findById(req.params.id);
         res.json(event)
     } catch (err) { next(err) }
-});
-
-// Add reservers in event
-app.put("/event/:id/reserver", async (req, res, next) => {
-    try {
-        const { userID } = req.body;
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, {
-            $push: { reservers: userID }
-        }, { new: true });
-        req.flash("success_msg", "You successfully reserved a seat")
-        res.redirect("/dashboard");
-    } catch(err) { next(err) }
-});
-
-// Remove reservers in event
-app.delete("/event/:id/reserver", async (req, res, next) => {
-    try {
-        const { userID } = req.body;
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, {
-            $pull: { reservers: userID }
-        }, { new: true });
-
-        if (url.parse(req.headers.referer).pathname === "/dashboard") {
-            req.flash("error_msg", "Your seat reservation is now cancelled")
-            res.redirect("/dashboard");
-        } else {
-            res.redirect(`/event/${req.params.id}`);
-        }
-    } catch (err) { next(err) }
-});
-
-// Add attendees in event
-app.put("/event/:id/attendee", async (req, res, next) => {
-    try {
-        const { userID } = req.body;
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, {
-            $pull: { reservers: userID },
-            $push: { attendees: userID }
-        }, { new: true });
-        res.redirect(`/event/${req.params.id}`);
-        return;
-        // }
-    } catch(err) { next(err) }
 });
 
 // app.get("/downloadable-forms", (req, res) => {

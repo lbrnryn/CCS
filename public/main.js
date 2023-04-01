@@ -42,7 +42,7 @@ if (location.pathname === "/") {
 // Remove toast notification after 2s
 const toast = document.querySelector(".toast");
 if (toast) {
-    setTimeout(() => toast.remove(), 2000);
+    setTimeout(() => toast.remove(), 3000);
 }
 
 

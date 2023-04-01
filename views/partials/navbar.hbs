@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-5">
     <div class="container-fluid">
         <a class="navbar-brand" href="/" title="home">
             <img src="../images/ccs-logo.png" alt="" class="logo">
@@ -31,6 +31,7 @@
             <li class="nav-item">
                 <a href="/" class="nav-link text-white text-nowrap" title="Underconstruction">CCS Tech Guild</a>
             </li>
+            {{{isAdmin user}}}
             <li class="nav-item">
                 {{#if user}}
                     <div class="dropdown">

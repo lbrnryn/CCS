@@ -70,10 +70,14 @@ const listofReserversHelper = ({reservers, currentUserID, eventID}) => {
             return `
                 <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
                     ${reserver.firstname} ${reserver.lastname}
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-1">
                         <form action="/event/${eventID}/attendee?_method=PUT" method="post">
                             <input type="hidden" name="userID" value="${reserver._id}">
                             <button type="submit" class="btn btn-sm btn-primary">PRESENT</button>
+                        </form>
+                        <form action="#" method="post">
+                            <input type="hidden" name="userID" value="${reserver._id}">
+                            <button type="submit" class="btn btn-sm btn-danger">ABSENT</button>
                         </form>
                         <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
                             <input type="hidden" name="userID" value="${reserver._id}">

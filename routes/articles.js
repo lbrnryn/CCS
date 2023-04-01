@@ -41,7 +41,7 @@ router.put("/edit/:id", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const userLogged = req.user ? true: false;
-        const article = await Article.findById(req.params.id);
+        const article = await Article.findById(req.params.id).lean();
         if (userLogged) {
             if (article.author._id.toString() === req.user._id) {
                 article.userLogged = true;
