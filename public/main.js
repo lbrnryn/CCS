@@ -96,3 +96,34 @@ deleteEventForms.forEach(deleteEventForm => {
         }
     });
 })
+
+//------------------------------------------------------------
+
+const addAttendeeBtns = document.querySelectorAll(".addAttendeeBtn");
+const reserversLis = Array.from(document.querySelector(".reserversList").children);
+const attendeesList = document.querySelector(".attendeesList");
+
+addAttendeeBtns.forEach(addAttendeeBtn => {
+    addAttendeeBtn.addEventListener("click", async (e) => {
+        const reserverID = e.target.dataset.reserverid;
+        const url = e.target.dataset.url;
+        // http://localhost:1000/api/event/64109ad425079b802bed472c/attendee
+        const res = await fetch(url, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reserverID: reserverID} )
+        });
+        const data = await res.json();
+        // console.log(data)
+        const li = document.createElement("li");
+        li.className = "list-group-item secondary-bg-color text-white text-capitalize";
+        li.innerText = `${data.firstname} ${data.lastname}`;
+        attendeesList.appendChild(li);
+        
+        for (const li of reserversLis) {
+            if (li.dataset.reserverid === "64108c29baa28ce45b57c7bf") {
+                li.remove();
+            }
+        }
+    })
+})

@@ -68,13 +68,11 @@ const listofReserversHelper = ({reservers, currentUserID, eventID}) => {
     } else {
         return reservers.map(reserver => {
             return `
-                <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center">
+                <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center" data-reserverid="${reserver._id}">
                     ${reserver.firstname} ${reserver.lastname}
                     <div class="d-flex align-items-center gap-1">
-                        <form action="/event/${eventID}/attendee?_method=PUT" method="post">
-                            <input type="hidden" name="userID" value="${reserver._id}">
-                            <button type="submit" class="btn btn-sm btn-primary">PRESENT</button>
-                        </form>
+                        <!--<button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="http://localhost:1000/api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>-->
+                        <button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>
                         <form action="#" method="post">
                             <input type="hidden" name="userID" value="${reserver._id}">
                             <button type="submit" class="btn btn-sm btn-danger">ABSENT</button>

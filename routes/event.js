@@ -24,8 +24,6 @@ router.route("/:id")
     })
     .put(async (req, res) => {
         try {
-            // console.log(req.body.time)
-            // console.log(typeof req.body.time)
             const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
             res.redirect("/dashboard");
         } catch (err) { next(err) }
@@ -72,20 +70,6 @@ router.delete("/:id/reserver", async (req, res, next) => {
             res.redirect(`/event/${req.params.id}`);
         }
     } catch (err) { next(err) }
-});
-
-// PUT /event/:id/attendee - Add attendees in event 
-router.put("/:id/attendee", async (req, res, next) => {
-    try {
-        const { userID } = req.body;
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, {
-            $pull: { reservers: userID },
-            $push: { attendees: userID }
-        }, { new: true });
-        res.redirect(`/event/${req.params.id}`);
-        return;
-        // }
-    } catch(err) { next(err) }
 });
 
 module.exports = router;

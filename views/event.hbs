@@ -5,15 +5,15 @@
     <div class="col-sm">
         <h6>Reservers</h6>
         <br>
-        <ul class="list-group">
+        <ul class="list-group reserversList">
             {{{listofReservers event.reservers event._id}}}
         </ul>
     </div>
 
     <div class="col-sm">
-        <h6>Present Attendance</h6>
+        <h6>Attendees</h6>
         <br>
-        <ul class="list-group">
+        <ul class="list-group attendeesList">
             {{#each event.attendees}}
                 <li class="list-group-item secondary-bg-color text-white text-capitalize">
                     {{this.firstname}} {{this.lastname}}

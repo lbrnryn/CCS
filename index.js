@@ -81,6 +81,9 @@ app.use("/faqs", require("./routes/faqs"));
 app.use("/articles", require("./routes/articles"));
 app.use("/event", require("./routes/event"));
 
+// API
+app.use("/api/event", require("./api/event"));
+
 app.use(function (req, res, next) {
     res.locals.success_msg = req.flash("success_msg");
     res.locals.error_msg = req.flash("error_msg");
@@ -110,7 +113,8 @@ app.get("/users", async (req, res, next) => {
 // http://localhost:1000/register - POST - User registration
 app.post("/register", async (req, res, next) => {
     try {
-        const { firstname, lastname, idNumber, username, password } = req.body;
+        const { email, firstname, lastname, idNumber, username, password } = req.body;
+        const isEmailTaken = await User.findOne({ email: email });
         const isUsernameTaken = await User.findOne({ username: username });
         const user = await User.findOne({ firstname: firstname, lastname: lastname });
         if (isUsernameTaken) {
@@ -119,9 +123,12 @@ app.post("/register", async (req, res, next) => {
         } else if (user) {
             req.flash("error_msg", "You already have an account");
             res.redirect("/");
+        } else if (isEmailTaken) {
+            req.flash("error_msg", "Email is already taken");
+            res.redirect("/");
         } else {
             const newUser = await User.create({
-                firstname, lastname, idNumber, username, password
+                email, firstname, lastname, idNumber, username, password
             });
             req.flash("success_msg", "Successfully registered!");
             res.redirect("/");
