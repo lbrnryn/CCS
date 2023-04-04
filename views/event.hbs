@@ -2,8 +2,11 @@
 <h6>{{event.description}}</h6>
 <br>
 <div class="row gap-5">
-    <div class="col-sm">
-        <h6>Reservers</h6>
+    <div class="col-sm-5">
+        <div class="d-flex justify-content-between">
+            <h6>Reservers</h6>
+            <span class="reserversListCount">{{event.reservers.length}}</span>
+        </div>
         <br>
         <ul class="list-group reserversList">
             {{{listofReservers event.reservers event._id}}}
@@ -11,10 +14,28 @@
     </div>
 
     <div class="col-sm">
-        <h6>Attendees</h6>
+        <div class="d-flex justify-content-between">
+            <h6>Attendees</h6>
+            <span class="attendeesListCount">{{event.attendees.length}}</span>
+        </div>
         <br>
         <ul class="list-group attendeesList">
             {{#each event.attendees}}
+                <li class="list-group-item secondary-bg-color text-white text-capitalize">
+                    {{this.firstname}} {{this.lastname}}
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <div class="col-sm">
+        <div class="d-flex justify-content-between">
+            <h6>Absentees</h6>
+            <span class="absenteesListCount">{{event.absentees.length}}</span>
+        </div>
+        <br>
+        <ul class="list-group absenteesList">
+            {{#each event.absentees}}
                 <li class="list-group-item secondary-bg-color text-white text-capitalize">
                     {{this.firstname}} {{this.lastname}}
                 </li>

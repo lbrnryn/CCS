@@ -10,7 +10,7 @@ router.route("/:id")
     .get(checkAuthenticated, async (req, res, next) => {
         try {
             const user = await User.findById(req.user._id);
-            const event = await Event.findById(req.params.id).populate("reservers").populate("attendees").lean();
+            const event = await Event.findById(req.params.id).populate("reservers").populate("attendees").populate("absentees").lean();
             res.render("event", {
                 user,
                 event,
@@ -73,38 +73,3 @@ router.delete("/:id/reserver", async (req, res, next) => {
 });
 
 module.exports = router;
-
-// GET /event/:id
-// router.get("/:id", checkAuthenticated, async (req, res, next) => {
-//     try {
-//         const user = await User.findById(req.user._id);
-//         const event = await Event.findById(req.params.id).populate("reservers").populate("attendees").lean();
-//         res.render("event", {
-//             user,
-//             event,
-//             helpers: {
-//                 listofReservers(reservers, eventID) {
-//                     return listofReserversHelper({ reservers, eventID })
-//                 }
-//             }
-//         });
-//     } catch (err) { next(err) }
-// });
-
-// PUT /event/:id
-// router.put("/:id", async (req, res) => {
-//     try {
-//         console.log(req.body.time)
-//         console.log(typeof req.body.time)
-//         const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-//         res.redirect("/dashboard");
-//     } catch (err) { next(err) }
-// });
-
-// DELETE /event/:id
-// router.delete("/:id", async (req, res) => {
-//     try {
-//         await Event.findByIdAndDelete(req.params.id);
-//         res.redirect("/dashboard");
-//     } catch(err) { next(err) }
-// });

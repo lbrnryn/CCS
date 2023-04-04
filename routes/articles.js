@@ -63,6 +63,7 @@ router.delete("/:id", async (req, res) => {
 // GET - http://localhost:1000/articles
 router.get("/", async (req, res) => {
     try {
+        const user = await User.findById(req.user._id);
         const userLogged = req.user ? true: false;
         const articles = await Article.find().populate("author").lean();
         articles.forEach(article => {
@@ -75,7 +76,7 @@ router.get("/", async (req, res) => {
             }
         });
         // console.log(articles)
-        res.render("articles", { articles, userLogged });
+        res.render("articles", { articles, userLogged, user });
     } catch (err) {
         console.log(err);
     }

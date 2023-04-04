@@ -83,6 +83,7 @@ app.use("/event", require("./routes/event"));
 
 // API
 app.use("/api/event", require("./api/event"));
+app.use("/api/users", require("./api/user"));
 
 app.use(function (req, res, next) {
     res.locals.success_msg = req.flash("success_msg");
@@ -92,11 +93,6 @@ app.use(function (req, res, next) {
     next()
 });
 
-app.get("/api/users", async (req, res) => {
-    const user = await User.findOne(req.query);
-    res.json(user)
-})
-
 app.get("/", async (req, res, next) => {
     try {
         res.render("home", { user: req.user ? req.user: false });
@@ -105,8 +101,10 @@ app.get("/", async (req, res, next) => {
 
 app.get("/users", async (req, res, next) => {
     try {
+        const user = await User.findById(req.user._id);
         const users = await User.find().lean();
-        res.render("users", { users, user: req.user })
+        users.forEach(user => { user.url = `http://localhost:1000/api/users/${user._id}` });
+        res.render("users", { users, user })
     } catch(err) { next(err) }
 })
 

@@ -99,31 +99,192 @@ deleteEventForms.forEach(deleteEventForm => {
 
 //------------------------------------------------------------
 
-const addAttendeeBtns = document.querySelectorAll(".addAttendeeBtn");
-const reserversLis = Array.from(document.querySelector(".reserversList").children);
-const attendeesList = document.querySelector(".attendeesList");
+// console.log(location.pathname)
+const re = /^\/event\/[a-f\d]{24}$/i;
 
-addAttendeeBtns.forEach(addAttendeeBtn => {
-    addAttendeeBtn.addEventListener("click", async (e) => {
-        const reserverID = e.target.dataset.reserverid;
-        const url = e.target.dataset.url;
-        // http://localhost:1000/api/event/64109ad425079b802bed472c/attendee
+if (re.test(location.pathname)) {
+    const reserversList = document.querySelector(".reserversList");
+    const reserversLis = Array.from(reserversList.children);
+    const reserversListCount = document.querySelector(".reserversListCount");
+
+    const addAttendeeBtns = document.querySelectorAll(".addAttendeeBtn");
+    const attendeesList = document.querySelector(".attendeesList");
+    const attendeesListCount = document.querySelector(".attendeesListCount");
+
+    const addAbsenteeBtns = document.querySelectorAll(".addAbsenteeBtn");
+    const absenteesList = document.querySelector(".absenteesList");
+    const absenteesListCount = document.querySelector(".absenteesListCount");
+
+    addAttendeeBtns.forEach(addAttendeeBtn => {
+        addAttendeeBtn.addEventListener("click", async (e) => {
+            const reserverID = e.target.dataset.reserverid;
+            const url = e.target.dataset.url;
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reserverID: reserverID} )
+            });
+            const data = await res.json();
+
+            const li = document.createElement("li");
+            li.className = "list-group-item secondary-bg-color text-white text-capitalize";
+            li.innerText = `${data.firstname} ${data.lastname}`;
+            attendeesList.appendChild(li);
+            
+            for (const li of reserversLis) {
+                if (li.dataset.reserverid === data._id) {
+                    li.remove();
+                }
+            }
+
+            attendeesListCount.innerText = attendeesList.children.length.toString();
+            reserversListCount.innerText = reserversList.children.length.toString();
+        })
+    });
+
+    addAbsenteeBtns.forEach(addAbsenteeBtn => {
+        addAbsenteeBtn.addEventListener("click", async (e) => {
+            const reserverID = e.target.dataset.reserverid;
+            const url = e.target.dataset.url;
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reserverID: reserverID} )
+            });
+            const data = await res.json();
+
+            const li = document.createElement("li");
+            li.className = "list-group-item secondary-bg-color text-white text-capitalize";
+            li.innerText = `${data.firstname} ${data.lastname}`;
+            absenteesList.appendChild(li);
+            
+            for (const li of reserversLis) {
+                if (li.dataset.reserverid === data._id) {
+                    li.remove();
+                }
+            }
+
+            absenteesListCount.innerText = absenteesList.children.length.toString();
+            reserversListCount.innerText = reserversList.children.length.toString();
+        })
+    });
+}
+
+
+
+//------------------------------------------------------------
+
+if (location.pathname === "/users") {
+    const editUserBtns = document.querySelectorAll(".editUserBtn");
+    const editUserForm = document.querySelector("#editUserForm");
+    const idNumber = document.querySelector("#idNumber");
+    const firstname = document.querySelector("#firstname");
+    const lastname = document.querySelector("#lastname");
+    const username = document.querySelector("#username");
+    const email = document.querySelector("#email");
+    const submitEditUserBtn = document.querySelector("#submitEditUserBtn");
+    const cancelEditUserBtn = document.querySelector("#cancelEditUserBtn");
+    const searchStudent = document.querySelector("#searchStudent");
+    const userList = document.querySelector("#userList");
+
+    userList.addEventListener("click", async (e) => {
+
+        // If edit button is clicked
+        const editUserBtn = e.target.tagName === "I" ? e.target.parentElement: e.target;
+        const editBtn = editUserBtn.classList.contains("editUserBtn") && editUserBtn;
+        const url = editBtn.dataset.url;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        editUserForm.action = new URL(editBtn.dataset.url).pathname;
+        idNumber.value = data.idNumber;
+        firstname.value = data.firstname;
+        lastname.value = data.lastname;
+        username.value = data.username;
+        email.value = !data.email ? "": data.email;
+        submitEditUserBtn.innerText = "Edit";
+        cancelEditUserBtn.style.display = "block";
+
+    })
+
+    // editUserBtns.forEach(editUserBtn => {
+    //     editUserBtn.addEventListener("click", async (e) => {
+    //         const editBtn = e.target.tagName === "I" ? e.target.parentElement: e.target;
+    //         const url = editBtn.dataset.url;
+
+    //         const res = await fetch(url);
+    //         const data = await res.json();
+
+    //         editUserForm.action = new URL(editBtn.dataset.url).pathname;
+    //         idNumber.value = data.idNumber;
+    //         firstname.value = data.firstname;
+    //         lastname.value = data.lastname;
+    //         username.value = data.username;
+    //         email.value = !data.email ? "": data.email;
+    //         submitEditUserBtn.innerText = "Edit";
+    //         cancelEditUserBtn.style.display = "block";
+    //     });
+    // });
+
+    cancelEditUserBtn.addEventListener("click", () => {
+        idNumber.value = "";
+        firstname.value = "";
+        lastname.value = "";
+        username.value = "";
+        email.value = "";
+        submitEditUserBtn.innerText = "Submit";
+        cancelEditUserBtn.style.display = "none";
+    });
+
+    searchStudent.addEventListener("keyup", (e) => {
+        for (const li of userList.children) {
+            if (!li.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
+                li.classList.remove("d-flex");
+                li.style.display = "none";
+            } else {
+                li.style.display = "flex";
+            }
+        }
+    });
+
+    editUserForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const url = e.target.action;
+
         const res = await fetch(url, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reserverID: reserverID} )
+            body: JSON.stringify({
+                idNumber: idNumber.value,
+                firstname: firstname.value,
+                lastname: lastname.value,
+                username: username.value,
+                email: email.value
+            })
         });
         const data = await res.json();
-        // console.log(data)
-        const li = document.createElement("li");
-        li.className = "list-group-item secondary-bg-color text-white text-capitalize";
-        li.innerText = `${data.firstname} ${data.lastname}`;
-        attendeesList.appendChild(li);
-        
-        for (const li of reserversLis) {
-            if (li.dataset.reserverid === "64108c29baa28ce45b57c7bf") {
-                li.remove();
-            }
-        }
-    })
-})
+        console.log(data);
+
+        const userListLis = Array.from(userList.children);
+        // console.log(userListLis.findIndex(li => li.dataset.id === data._id))
+        const liIndex = userListLis.findIndex(li => li.dataset.id === data._id);
+        userListLis[liIndex].innerHTML = `
+            ${data.firstname} ${data.lastname}
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn p-0 editUserBtn" data-url="${e.target.action}"><i class="bi bi-pencil-fill text-warning"></i></button>
+                <form action="" class="deleteUserForm" method="post">
+                    <button type="submit" class="btn p-0"><i class="bi bi-trash3-fill text-danger"></i></button>
+                </form>
+            </div>
+        `;
+
+        idNumber.value = "";
+        firstname.value = "";
+        lastname.value = "";
+        username.value = "";
+        email.value = "";
+        submitEditUserBtn.innerText = "Submit";
+        cancelEditUserBtn.style.display = "none";
+    });
+}

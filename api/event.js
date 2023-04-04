@@ -18,4 +18,19 @@ router.put("/:id/attendee", async (req, res, next) => {
     } catch(err) { next(err) }
 });
 
+// PUT /api/event/:id/absentee - Add absentees in event 
+router.put("/:id/absentee", async (req, res, next) => {
+    try {
+        const { reserverID } = req.body;
+        await Event.findByIdAndUpdate(req.params.id, {
+            $pull: { reservers: reserverID },
+            $push: { absentees: reserverID }
+        });
+
+        const attendee = await User.findById({ _id: reserverID });
+        res.json(attendee)
+
+    } catch(err) { next(err) }
+});
+
 module.exports = router;

@@ -7,6 +7,7 @@ const event = new mongoose.Schema({
     time: String,
     reservers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    absentees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     rationale: String,
     objectives: String,
     guidelines: String,
