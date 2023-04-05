@@ -61,9 +61,9 @@
 
 <hr class="my-5">
 
-<div class="w-auto">
+<div class="w-auto mb-5">
     <h2>Article Post</h2>
-    <form action="/articles" class="d-grid gap-3" method="POST">
+    <form action="/api/articles" class="d-grid gap-3" id="articleForm">
         <input type="hidden" name="author" value="{{user._id}}">
         <div>
             <label for="title" class="form-label">Title</label>
@@ -73,6 +73,20 @@
             <label for="body" class="form-label">Body</label>
             <textarea class="form-control border-0" id="body" cols="30" rows="10" name="body"></textarea>
         </div>
-        <button class="btn btn-sm btn-dark">Submit</button>
+        <button type="submit" class="btn btn-sm btn-dark" id="submitEditArticleBtn">Submit</button>
+        <button type="button" class="btn btn-sm btn-dark" id="cancelEditArticleBtn">Cancel</button>
     </form>
 </div>
+
+<ul class="list-group gap-1" id="articlesList">
+    {{#each articles}}
+        <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center" data-id="{{this._id}}">
+            {{this.title}}
+            <div class="d-flex align-items-center gap-2">
+                {{{approvedRejected this.isApproved this.isRejected}}}
+                <button type="button" class="btn p-0 editArticleBtn" data-url="http://localhost:1000/api/articles/{{this._id}}"><i class="bi bi-pencil-fill text-warning"></i></button>
+                <button type="button" class="btn p-0 deleteArticleBtn" data-url="http://localhost:1000/api/articles/{{this._id}}"><i class="bi bi-trash3-fill text-danger"></i></button>
+            </div>
+        </li>
+    {{/each}}
+</ul>

@@ -1,7 +1,6 @@
 <h2 class="mb-5">Dashboard - Admin</h2>
 <div class="mt-5 row gy-5">
 
-    {{!-- <div class="col-sm"> --}}
     <div class="col-sm-6">
         <h4>Create Event</h4>
         <form action="/event" method="post" class="d-grid gap-3" id="eventForm">
@@ -16,7 +15,6 @@
             <div class="row">
                 <div class="col">
                     <label for="date">Date</label>
-                    {{!-- <input type="datetime-local" class="form-control form-control-sm border-0" name="date" id="date"> --}}
                     <input type="date" class="form-control form-control-sm border-0" name="date" id="date">
                 </div>
                 <div class="col">
@@ -45,6 +43,7 @@
     </div>
 
     <div class="col-sm">
+
         <ul class="list-group gap-1">
             {{#each events}}
                 <li class="list-group-item secondary-bg-color d-flex justify-content-between align-items-center">
@@ -58,6 +57,15 @@
                 </li>
             {{/each}}
         </ul>
+
+        <hr class="border border-white border-5 my-5">
+
+        <ul class="list-group gap-1">
+        {{#each articles}}
+            <li class="list-group-item secondary-bg-color text-white d-flex justify-content-between align-items-center text-capitalize">{{this.title}} <span>{{this.author.firstname}} {{this.author.lastname}}</span></li>
+        {{/each}}
+        </ul>
+        
     </div>
 
     {{!-- <div class="col-sm">

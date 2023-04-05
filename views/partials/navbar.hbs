@@ -33,26 +33,25 @@
             </li>
             {{{isAdmin user}}}
             <li class="nav-item">
-                {{#if user}}
-                    <div class="dropdown">
-                        <button class="border-0 bg-transparent text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-gear fs-2"></i>
-                        </button>
-                        <ul class="dropdown-menu secondary-bg-color">
-                            <li>
-                                <a href="/profile" class="link-light text-decoration-none px-2">Profile</a>
-                            </li>
-                            <li>
-                                <form action="/logout?_method=DELETE" method="POST">
-                                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                {{else}}
-                    {{> login-register-modal}}
-                {{/if}}
-
+            {{#if user}}
+                <div class="dropdown">
+                    <button class="border-0 bg-transparent text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-gear fs-2"></i>
+                    </button>
+                    <ul class="dropdown-menu secondary-bg-color">
+                        <li>
+                            <a href="/profile" class="link-light text-decoration-none px-2">Profile</a>
+                        </li>
+                        <li>
+                            <form action="/logout?_method=DELETE" method="post">
+                                <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            {{else}}
+                {{> login-register-modal}}
+            {{/if}}
             </li>
         </div>
     </div>

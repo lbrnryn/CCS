@@ -16,6 +16,7 @@ const { reservationStatusHelper, formatDateHelper, formatTimeHelper, isCurrentUs
 // Models
 const User = require("./models/User");
 const Event = require("./models/Event");
+const Article = require("./models/Article");
 
 const app = express();
 
@@ -84,6 +85,7 @@ app.use("/event", require("./routes/event"));
 // API
 app.use("/api/event", require("./api/event"));
 app.use("/api/users", require("./api/user"));
+app.use("/api/articles", require("./api/article"));
 
 app.use(function (req, res, next) {
     res.locals.success_msg = req.flash("success_msg");
@@ -103,7 +105,7 @@ app.get("/users", async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id);
         const users = await User.find().lean();
-        users.forEach(user => { user.url = `http://localhost:1000/api/users/${user._id}` });
+        users.forEach(user => { user.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/users/${user._id}`: `https://ccs-icct-tech-guild.onrender.com/api/users/${user._id}` });
         res.render("users", { users, user })
     } catch(err) { next(err) }
 })
@@ -175,9 +177,12 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
             // const events = await Event.find().populate("reservers").lean();
             events.forEach(event => event.userID = req.user._id);
             // events.forEach(event => event.userID = "64108c29baa28ce45b57c7bf");
+            const articles = await Article.find({ author: req.user._id }).populate("author").lean();
+            // console.log(articles)
             res.render("student/dashboard", {
                 user: req.user,
                 events,
+                articles,
                 helpers: {
                     reservationStatus(reservers) {
                         return reservationStatusHelper(reservers)
@@ -196,6 +201,16 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
                     },
                     formatToList(paragraph) {
                         return formatToListHelper(paragraph)
+                    },
+                    approvedRejected(isApproved, isRejected) {
+                        // if (!isApproved) { return `<span class="badge bg-secondary">Waiting for Approval</span>` }
+                        if (isRejected) {
+                            return `<span class="badge bg-danger">Rejected</span>`
+                        } else if (isApproved) {
+                            return `<span class="badge bg-success">Published</span>` 
+                        } else {
+                            return `<span class="badge bg-secondary">Waiting for Approval</span>`
+                        }
                     }
                 }
             });
@@ -203,8 +218,8 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
             const events = await Event.find().sort({ date: -1 }).lean();
             events.forEach(event => event.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/event/${event._id}`: `https://ccs-icct-tech-guild.onrender.com/api/event/${event._id}`);
             const user = await User.findById(req.user._id);
-            res.render("admin/dashboard", { user, events });
-            // res.render("admin/dashboard", { events });
+            const articles = await Article.find({ isApproved: false }).populate("author").lean();
+            res.render("admin/dashboard", { user, events, articles });
         }
     } catch(err) { next(err) }
 

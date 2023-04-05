@@ -11,7 +11,9 @@ const articleSchema = new mongoose.Schema({
     },
     title: String,
     body: String,
-    markedHtml: String
+    markedHtml: String,
+    isApproved: { type: Boolean, default: false },
+    isRejected: { type: Boolean, default: false }
 }, { timestamps: true });
 
 articleSchema.pre("validate", function(next) {
