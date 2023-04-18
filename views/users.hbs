@@ -1,46 +1,45 @@
 <div class="row gap-5">
     <div class="col-sm">
-        <input type="text" class="form-control form-control-sm mb-5" id="searchStudent" placeholder="Search student...">
-        <p class="text-end">{{users.length}}</p>
+        <input type="text" class="form-control form-control-sm mb-5" id="searchStudentInput" placeholder="Search student...">
+        <p class="text-end" id="usersCount">{{users.length}}</p>
         <ul class="list-group gap-2" id="userList">
             {{#each users}}
-                <li class="list-group-item text-capitalize secondary-bg-color text-white d-flex justify-content-between align-items-center" data-id="{{this._id}}">
-                    {{this.firstname}} {{this.lastname}}
-                    <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn p-0 editUserBtn" data-url="{{this.url}}"><i class="bi bi-pencil-fill text-warning"></i></button>
-                        <button type="button" class="btn p-0"><i class="bi bi-trash3-fill text-danger"></i></button>
-                        {{!-- <form action="" class="deleteUserForm" method="post">
-                            <button type="submit" class="btn p-0"><i class="bi bi-trash3-fill text-danger"></i></button>
-                        </form> --}}
+                <li class="list-group-item text-capitalize secondary-bg-color text-white" data-id="{{this._id}}" data-name="{{this.firstname}} {{this.lastname}}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        {{this.firstname}} {{this.lastname}}
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn p-0 editUserBtn" data-url="/api/users/{{this._id}}"><i class="bi bi-pencil-fill text-warning"></i></button>
+                            <button type="button" class="btn p-0 deleteUserBtn" data-url="/api/users/{{this._id}}"><i class="bi bi-trash3-fill text-danger"></i></button>
+                        </div>
                     </div>
                 </li>
             {{/each}}
         </ul>
     </div>
     <div class="col-sm">
-        <form class="d-grid gap-2" id="editUserForm">
+        <form class="d-grid gap-2" id="userForm">
             <div>
                 <label for="idNumber" class="form-label">ID No.</label>
-                <input type="text" class="form-control form-control-sm" id="idNumber" name="idNumber" required>
+                <input type="text" class="form-control form-control-sm" id="idNumber" name="idNumber">
             </div>
             <div>
                 <label for="firstname" class="form-label">Firstname</label>
-                <input type="text" class="form-control form-control-sm" id="firstname" name="firstname" required>
+                <input type="text" class="form-control form-control-sm" id="firstname" name="firstname">
             </div>
             <div>
                 <label for="lastname" class="form-label">Lastname</label>
-                <input type="text" class="form-control form-control-sm" id="lastname" name="lastname" required>
+                <input type="text" class="form-control form-control-sm" id="lastname" name="lastname">
             </div>
             <div>
                 <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control form-control-sm" id="username" name="username" required>
+                <input type="text" class="form-control form-control-sm" id="username" name="username">
             </div>
             <div>
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control form-control-sm" id="email" name="email" required>
+                <input type="email" class="form-control form-control-sm" id="email" name="email">
             </div>
-            <button type="submit" class="btn btn-sm btn-primary" id="submitEditUserBtn">Submit</button>
-            <button type="button" class="btn btn-sm btn-secondary" id="cancelEditUserBtn">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-primary" id="submitEditUserBtn" disabled>Submit</button>
+            <button type="button" class="btn btn-sm btn-secondary d-none" id="cancelEditUserBtn">Cancel</button>
         </form>
     </div>
 </div>

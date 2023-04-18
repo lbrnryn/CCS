@@ -65,4 +65,4 @@ textarea { resize: none; }
 
 .quote { font-family: 'Caveat', cursive; }
 
-#cancelEditUserBtn, #cancelEditArticleBtn { display: none; }
+#cancelEditArticleBtn { display: none; }

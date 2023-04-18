@@ -105,8 +105,8 @@ app.get("/users", async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id);
         const users = await User.find().lean();
-        users.forEach(user => { user.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/users/${user._id}`: `https://ccs-icct-tech-guild.onrender.com/api/users/${user._id}` });
-        res.render("users", { users, user })
+        // users.forEach(user => { user.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/users/${user._id}`: `https://ccs-icct-tech-guild.onrender.com/api/users/${user._id}` });
+        res.render("users", { users, user, script: "./admin/users.js" })
     } catch(err) { next(err) }
 })
 
@@ -127,9 +127,7 @@ app.post("/register", async (req, res, next) => {
             req.flash("error_msg", "Email is already taken");
             res.redirect("/");
         } else {
-            const newUser = await User.create({
-                email, firstname, lastname, idNumber, username, password
-            });
+            const newUser = await User.create(req.body);
             req.flash("success_msg", "Successfully registered!");
             res.redirect("/");
         }
