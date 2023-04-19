@@ -2,7 +2,6 @@ const express = require("express");
 const { engine } = require("express-handlebars");
 const bcrypt = require("bcryptjs");
 const flash = require("connect-flash");
-const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const passport = require("passport");
@@ -33,20 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set("json spaces", 2);
 
 // Express handlebars setup
-app.engine(".hbs", engine({
-    extname: ".hbs",
-    helpers: {
-        isAdmin(user) {
-            if (user && user.role === "admin") {
-                return `
-                    <li class="nav-item">
-                        <a href="/users" class="nav-link text-white">Manage Users</a>
-                    </li>
-                `
-            }
-        }
-    }
-}));
+app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs")
 app.set("views", "./views");
 
@@ -171,6 +157,7 @@ app.put("/profile", checkAuthenticated, async (req, res) => {
     } catch(err) { next(err) }
 });
 
+// app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
 app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
     try {
         if (req.user.role === "student") {
@@ -182,6 +169,7 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
                 user: req.user,
                 events,
                 articles,
+                script: "./student/dashboard.js",
                 helpers: {
                     reservationStatus(reservers) {
                         return reservationStatusHelper(reservers)
@@ -217,7 +205,7 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
             const events = await Event.find().sort({ date: -1 }).lean();
             const user = await User.findById(req.user._id);
             const articles = await Article.find({ isApproved: false }).populate("author").lean();
-            res.render("admin/dashboard", { user, events, articles, script: "./admin/dashboard.js" });
+            res.render("admin/dashboard", { user, admin: true ,events, articles, script: "./admin/dashboard.js" });
         }
     } catch(err) { next(err) }
 

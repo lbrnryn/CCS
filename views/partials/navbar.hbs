@@ -9,13 +9,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav align-items-lg-center">
             <li class="nav-item">
-            <a href="/" class="nav-link text-white">Home</a>
-            </li>
-            {{#if user}}
-                <li class="nav-item">
+                {{#if user}}
                     <a href="/dashboard" class="nav-link text-white">Dashboard</a>
-                </li>
-            {{/if}}
+                {{else}}
+                    <a href="/" class="nav-link text-white">Home</a>
+                {{/if}}
+            </li>
             <li class="nav-item">
                 <a href="/articles" class="nav-link text-white">Articles</a>
             </li>
@@ -28,34 +27,35 @@
             <li class="nav-item">
                 <a href="/" class="nav-link text-white text-nowrap" title="Underconstruction">CCS Tech Guild</a>
             </li>
-            <li class="nav-item">
-                <a href="/faqs" class="nav-link text-white">FAQ</a>
-            </li>
-            {{{isAdmin user}}}
-            <li class="nav-item">
-            {{#if user}}
-                <div class="dropdown">
-                    <button class="border-0 bg-transparent text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-gear fs-2"></i>
-                    </button>
-                    <ul class="dropdown-menu secondary-bg-color">
-                        <li>
-                            <a href="/profile" class="link-light text-decoration-none px-2">Profile</a>
-                        </li>
-                        <li>
-                            {{!-- <a href="/logout" class="border-0 bg-transparent text-danger">Logout</a> --}}
-                            {{!-- <form action="/logout" method="post">
-                                <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
-                            </form> --}}
-                            <form action="/logout?_method=DELETE" method="post">
-                                <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            {{else}}
-                {{> login-register-modal}}
+            {{#if admin}}
+                <li class="nav-item">
+                    <a href="/users" class="nav-link text-white">Manage Users</a>
+                </li>
             {{/if}}
+            <li class="nav-item">
+                {{#if user}}
+                    <div class="dropdown">
+                        <button class="border-0 bg-transparent text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear fs-2"></i>
+                        </button>
+                        <ul class="dropdown-menu secondary-bg-color">
+                            <li>
+                                <a href="/profile" class="link-light text-decoration-none px-2">Profile</a>
+                            </li>
+                            <li>
+                                {{!-- <a href="/logout" class="border-0 bg-transparent text-danger">Logout</a> --}}
+                                {{!-- <form action="/logout" method="post">
+                                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
+                                </form> --}}
+                                <form action="/logout?_method=DELETE" method="post">
+                                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                {{else}}
+                    {{> login-register-modal}}
+                {{/if}}
             </li>
         </div>
     </div>

@@ -7,7 +7,7 @@ let editEventUrl;
 addEventForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    if (submitEventBtn.innerText = "Edit") {
+    if (submitEventBtn.innerText === "Edit") {
         const res = await fetch(editEventUrl, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -29,7 +29,7 @@ addEventForm.addEventListener("submit", async (e) => {
             <a href="/event/${data._id}" class="text-decoration-none text-white">${data.title}</a>
             <div class="d-flex align-items-center gap-2">
                 <button type="button" class="btn p-0 editEventBtn" data-url="/api/event/${data._id}"><i class="bi bi-pencil-fill text-warning"></i></button>
-                <button type="submit" class="btn p-0 deleteEventBtn data-url="/api/event/${data._id}"><i class="bi bi-trash3-fill text-danger"></i></button>
+                <button type="submit" class="btn p-0 deleteEventBtn" data-url="/api/event/${data._id}"><i class="bi bi-trash3-fill text-danger"></i></button>
             </div>
         `;
 
@@ -69,7 +69,7 @@ addEventForm.addEventListener("submit", async (e) => {
             <a href="/event/${data._id}" class="text-decoration-none text-white">${data.title}</a>
             <div class="d-flex align-items-center gap-2">
                 <button type="button" class="btn p-0 editEventBtn" data-url="/api/event/${data._id}"><i class="bi bi-pencil-fill text-warning"></i></button>
-                <button type="submit" class="btn p-0 deleteEventBtn data-url="/api/event/${data._id}"><i class="bi bi-trash3-fill text-danger"></i></button>
+                <button type="button" class="btn p-0 deleteEventBtn" data-url="/api/event/${data._id}"><i class="bi bi-trash3-fill text-danger"></i></button>
             </div>
         `;
         eventList.appendChild(li);
@@ -113,24 +113,24 @@ eventList.addEventListener("click", async (e) => {
     }
 
     if (e.target.parentElement.classList.contains("deleteEventBtn")) {
-        const deleteEventBtn = e.target.parentElement;
-        const url = deleteEventBtn.dataset.url;
-
-        deleteEventBtn.parentElement.parentElement.remove();
-        await fetch(url, { method: "DELETE" });
-
-        title.value = "";
-        date.value = "";
-        time.value = "";
-        room.value = "";
-        description.value = "";
-        rationale.value = "";
-        objectives.value = "";
-        guidelines.value = "";
-        editEventUrl = undefined;
-        if (submitEventBtn.innerText === "Edit") { submitEventBtn.innerText === "Submit"; }
-
-        new bootstrap.Modal(addEventModal).show()
+        if (confirm("Are you sure you want to delete this event?")) {
+            const deleteEventBtn = e.target.parentElement;
+            const url = deleteEventBtn.dataset.url;
+    
+            deleteEventBtn.parentElement.parentElement.remove();
+            await fetch(url, { method: "DELETE" });
+    
+            title.value = "";
+            date.value = "";
+            time.value = "";
+            room.value = "";
+            description.value = "";
+            rationale.value = "";
+            objectives.value = "";
+            guidelines.value = "";
+            editEventUrl = undefined;
+            submitEventBtn.innerText === "Submit";
+        }
     }
 
 });

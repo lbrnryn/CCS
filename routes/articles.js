@@ -3,11 +3,6 @@ const router = express.Router();
 const Article = require("../models/Article");
 const User = require("../models/User");
 
-const marked = require("marked");
-const createDomPurify = require("dompurify");
-const { JSDOM } = require("jsdom");
-const dompurify = createDomPurify(new JSDOM().window);
-
 // GET - http://localhost:1000/articles
 router.get("/", async (req, res, next) => {
     try {

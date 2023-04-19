@@ -4,7 +4,6 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-body primary-bg-color rounded pb-5">
-                {{!-- <form action="/event" method="post" class="d-grid gap-3" id="addEventForm"> --}}
                 <form class="d-grid gap-3" id="addEventForm">
                     <div class="row">
                         <div class="col">
@@ -26,7 +25,7 @@
                     </div>
                     <div>
                         <label for="description">Description</label>
-                        <textarea class="form-control form-control-sm border-0" id="description" cols="30" rows="5" name="description" required></textarea>
+                        <textarea class="form-control form-control-sm border-0" id="description" cols="30" rows="5" name="description"></textarea>
                     </div>
                     <div>
                         <label for="rationale">Rationale</label>
@@ -40,7 +39,7 @@
                         <label for="guidelines">Guidelines</label>
                         <textarea name="guidelines" id="guidelines" cols="30" rows="10" class="form-control form-control-sm border-0"></textarea>
                     </div>
-                    <button class="btn btn-sm btn-primary" id="submitEventBtn">Create</button>
+                    <button type="submit" class="btn btn-sm btn-primary" id="submitEventBtn">Create</button>
                 </form>
             </div>
         </div>

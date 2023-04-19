@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const Article = require("../models/Article");
 
+const marked = require("marked");
+const createDomPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+const dompurify = createDomPurify(new JSDOM().window);
+
 // GET /api/articles/:id - Get single article
 router.get("/:id", async (req, res, next) => {
     try {
