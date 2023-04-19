@@ -37,10 +37,6 @@ app.engine(".hbs", engine({
     extname: ".hbs",
     helpers: {
         isAdmin(user) {
-            // console.log(user)
-            // console.log(user.role)
-            // console.log(user.role === "admin")
-            // return user.role === "admin"
             if (user && user.role === "admin") {
                 return `
                     <li class="nav-item">
@@ -55,15 +51,14 @@ app.set("view engine", ".hbs")
 app.set("views", "./views");
 
 // Flash Messaging Setup
-// app.use(cookieParser("secret"));
 app.use(session({
     secret: "keyboard cat",
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 60000 },
     store: new MongoDBStore({
-        uri: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ccs",
-        // uri: "mongodb://127.0.0.1:27017/ccs",
+        // uri: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ccs",
+        uri: "mongodb://127.0.0.1:27017/ccs",
         collection: "sessions"
     })
 }));
@@ -78,7 +73,6 @@ app.use(methodOverride("_method"));
 const checkAuthenticated = require("./middleware.js");  
 
 // Routers
-app.use("/faqs", require("./routes/faqs"));
 app.use("/articles", require("./routes/articles"));
 app.use("/event", require("./routes/event"));
 
@@ -105,12 +99,11 @@ app.get("/users", async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id);
         const users = await User.find().lean();
-        // users.forEach(user => { user.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/users/${user._id}`: `https://ccs-icct-tech-guild.onrender.com/api/users/${user._id}` });
         res.render("users", { users, user, script: "./admin/users.js" })
     } catch(err) { next(err) }
 })
 
-// http://localhost:1000/register - POST - User registration
+// /register - POST - User registration
 app.post("/register", async (req, res, next) => {
     try {
         const { email, firstname, lastname, idNumber, username, password } = req.body;
@@ -166,7 +159,6 @@ app.delete("/logout", (req, res, next) => {
 app.get("/profile", checkAuthenticated, async (req, res) => {
     try {
         const user = await User.findById(req.user._id).lean();
-        // console.log(user)
         res.render("profile", { user });
     } catch(err) { next(err) }
 });
@@ -174,7 +166,6 @@ app.get("/profile", checkAuthenticated, async (req, res) => {
 app.put("/profile", checkAuthenticated, async (req, res) => {
     try {
         const updUser = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
-        // console.log(updUser);
         req.flash("success_msg", "Profile has been updated");
         res.redirect("/profile");
     } catch(err) { next(err) }
@@ -182,14 +173,11 @@ app.put("/profile", checkAuthenticated, async (req, res) => {
 
 app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
     try {
-        // if (req.user.role === "student") {
         if (req.user.role === "student") {
             const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
             // const events = await Event.find().populate("reservers").lean();
             events.forEach(event => event.userID = req.user._id);
-            // events.forEach(event => event.userID = "64108c29baa28ce45b57c7bf");
             const articles = await Article.find({ author: req.user._id }).populate("author").lean();
-            // console.log(articles)
             res.render("student/dashboard", {
                 user: req.user,
                 events,
@@ -227,10 +215,9 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
             });
         } else {
             const events = await Event.find().sort({ date: -1 }).lean();
-            events.forEach(event => event.url = process.env.NODE_ENV === "development" ? `http://localhost:1000/api/event/${event._id}`: `https://ccs-icct-tech-guild.onrender.com/api/event/${event._id}`);
             const user = await User.findById(req.user._id);
             const articles = await Article.find({ isApproved: false }).populate("author").lean();
-            res.render("admin/dashboard", { user, events, articles });
+            res.render("admin/dashboard", { user, events, articles, script: "./admin/dashboard.js" });
         }
     } catch(err) { next(err) }
 
@@ -242,10 +229,6 @@ app.get("/api/event/:id", async (req, res, next) => {
         res.json(event)
     } catch (err) { next(err) }
 });
-
-// app.get("/downloadable-forms", (req, res) => {
-//     res.render("downloadble-forms", { userLogged: req.user });
-// });
 
 app.get("/ces", (req, res) => {
     res.render("ces");

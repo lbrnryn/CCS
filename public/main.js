@@ -170,45 +170,6 @@ if (location.pathname === "/dashboard" && document.querySelector("#articleForm")
 
 //------------------------------------------------------------
 
-const editEventBtns = document.querySelectorAll(".editEventBtn");
-const eventForm = document.querySelector("#eventForm");
-
-editEventBtns.forEach(editEventBtn => {
-    editEventBtn.addEventListener("click", async (e) => {
-        try {
-            const editBtn = e.target.tagName !== "BUTTON" ? e.target.parentElement: e.target;
-            const url = editBtn.dataset.url;
-            
-            const res = await fetch(url);
-            const data = await res.json();
-            const { title, description, date, time, room, rationale, objectives, guidelines } = data;
-            
-            eventForm.elements.title.value = title;
-            eventForm.elements.description.value = description;
-            eventForm.elements.time.value = time;
-            eventForm.elements.date.value = date.slice(0, 10);
-            eventForm.elements.room.value = room;
-            eventForm.elements.rationale.value = rationale;
-            eventForm.elements.objectives.value = objectives;
-            eventForm.elements.guidelines.value = guidelines;
-            eventForm.action = `/event/${data._id}?_method=PUT`;
-            eventForm.elements[8].innerText = "Update";
-        } catch (err) { console.log(err) }
-    });
-});
-
-const deleteEventForms = document.querySelectorAll(".deleteEventForm");
-
-deleteEventForms.forEach(deleteEventForm => {
-    deleteEventForm.addEventListener("submit", (e) => {
-        if (!confirm("Are you sure you want to delete?")) {
-            e.preventDefault();
-        }
-    });
-})
-
-//------------------------------------------------------------
-
 // console.log(location.pathname)
 const re = /^\/event\/[a-f\d]{24}$/i;
 

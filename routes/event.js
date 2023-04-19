@@ -22,26 +22,6 @@ router.route("/:id")
             });
         } catch (err) { next(err) }
     })
-    .put(async (req, res) => {
-        try {
-            const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-            res.redirect("/dashboard");
-        } catch (err) { next(err) }
-    })
-    .delete(async (req, res) => {
-        try {
-            await Event.findByIdAndDelete(req.params.id);
-            res.redirect("/dashboard");
-        } catch(err) { next(err) }
-    })
-
-// /event
-router.post("/", async (req, res, next) => {
-    try {
-        const event = await Event.create(req.body);
-        res.redirect("/dashboard");
-    } catch(err) { next(err) }
-});
 
 // PUT /event/:id/reserver - Add reservers in event 
 router.put("/:id/reserver", async (req, res, next) => {

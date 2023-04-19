@@ -1,0 +1,48 @@
+<button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addEventModal">Create Event</button>
+
+<div class="modal fade mt-5" id="addEventModal">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body primary-bg-color rounded pb-5">
+                {{!-- <form action="/event" method="post" class="d-grid gap-3" id="addEventForm"> --}}
+                <form class="d-grid gap-3" id="addEventForm">
+                    <div class="row">
+                        <div class="col">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control form-control-sm border-0" id="title" name="title">
+                        </div>
+                        <div class="col-2">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control form-control-sm border-0" name="date" id="date">
+                        </div>
+                        <div class="col-2">
+                            <label for="time">Time</label>
+                            <input type="time" class="form-control form-control-sm border-0" name="time" id="time">
+                        </div>
+                        <div class="col-1">
+                            <label for="room">Room</label>
+                            <input type="text" class="form-control form-control-sm border-0" name="room" id="room">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="description">Description</label>
+                        <textarea class="form-control form-control-sm border-0" id="description" cols="30" rows="5" name="description" required></textarea>
+                    </div>
+                    <div>
+                        <label for="rationale">Rationale</label>
+                        <textarea name="rationale" id="rationale" cols="30" rows="10" class="form-control form-control-sm border-0"></textarea>
+                    </div>
+                    <div>
+                        <label for="objectives">Objectives</label>
+                        <textarea name="objectives" id="objectives" cols="30" rows="10" class="form-control form-control-sm border-0"></textarea>
+                    </div>
+                    <div>
+                        <label for="guidelines">Guidelines</label>
+                        <textarea name="guidelines" id="guidelines" cols="30" rows="10" class="form-control form-control-sm border-0"></textarea>
+                    </div>
+                    <button class="btn btn-sm btn-primary" id="submitEventBtn">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
