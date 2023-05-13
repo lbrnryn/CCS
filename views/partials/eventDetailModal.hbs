@@ -1,3 +1,4 @@
+{{!-- <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detail{{this._id}}Modal"> --}}
 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detail{{this._id}}Modal">
     Details
 </button>
@@ -24,7 +25,7 @@
                 <p>{{{formatToList this.guidelines}}}</p>
                 <hr>
                 <p class="text-end">Room {{this.reservers.length}} / 60</p>
-                <ul class="list-group gap-2">
+                <ul class="list-group gap-2" id="reserversList">
                     {{{listofReservers this.reservers this.userID this._id}}}
                 </ul>
             </div>

@@ -119,14 +119,13 @@ app.post("/login", (req, res, next) => {
 
     passport.authenticate('local', function(err, user, info) {
         // console.log('info', info)
-        if (err) { console.log(err) }
+        if (err) { next(err) }
         // if (!user) { return res.status(401).json({ message: 'Authentication failed' }) }
         if (!user) { return res.status(401).json({ message: info.message }) }
         // console.log('passport.authenticate', user);
         // res.json({ redirectUrl: '/dashboard' });
         req.login(user, (err) => {
-            // if (err) { return next(err) }
-            if (err) { console.log(err) }
+            if (err) { return next(err) }
             req.flash('success_msg', info.message);
             return res.json({ redirectUrl: '/dashboard' });
         });
@@ -140,14 +139,14 @@ app.post("/logout", (req, res, next) => {
     });
 });
 
-app.get("/profile", checkAuthenticated, async (req, res) => {
+app.get("/profile", checkAuthenticated, async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id).lean();
         res.render("profile", { user });
     } catch(err) { next(err) }
 });
 
-app.put("/profile", checkAuthenticated, async (req, res) => {
+app.put("/profile", checkAuthenticated, async (req, res, next) => {
     try {
         const updUser = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
         req.flash("success_msg", "Profile has been updated");
@@ -155,59 +154,58 @@ app.put("/profile", checkAuthenticated, async (req, res) => {
     } catch(err) { next(err) }
 });
 
-// app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
-app.get("/dashboard", async (req, res, next) => {
+app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
+// app.get("/dashboard", async (req, res, next) => {
     try {
-        console.log('req.isAuthenticated', req.isAuthenticated())
+        // console.log('req.isAuthenticated', req.isAuthenticated())
         // console.log('dashboard', req.user)
-        // if (req.user.role === "student") {
-        //     // const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
-        //     const events = await Event.find().populate("reservers").lean();
-        //     events.forEach(event => event.userID = req.user._id);
-        //     // const articles = await Article.find({ author: req.user._id }).populate("author").lean();
-        //     res.render("student/dashboard", {
-        //         user: req.user,
-        //         events,
-        //         // articles,
-        //         script: "./student/dashboard.js",
-        //         helpers: {
-        //             reservationStatus(reservers) {
-        //                 return reservationStatusHelper(reservers)
-        //             },
-        //             formatDate(date) {
-        //                 return formatDateHelper(date)
-        //             },
-        //             formatTime(time) {
-        //                 return formatTimeHelper(time)
-        //             },
-        //             isCurrentUserReserved(reservers, currentUserID, eventID) {
-        //                 return isCurrentUserReservedHelper(reservers, currentUserID, eventID)
-        //             },
-        //             listofReservers(reservers, currentUserID, eventID) {
-        //                 return listofReserversHelper({ reservers, currentUserID, eventID })
-        //             },
-        //             formatToList(paragraph) {
-        //                 return formatToListHelper(paragraph)
-        //             },
-        //             approvedRejected(isApproved, isRejected) {
-        //                 // if (!isApproved) { return `<span class="badge bg-secondary">Waiting for Approval</span>` }
-        //                 if (isRejected) {
-        //                     return `<span class="badge bg-danger">Rejected</span>`
-        //                 } else if (isApproved) {
-        //                     return `<span class="badge bg-success">Published</span>` 
-        //                 } else {
-        //                     return `<span class="badge bg-secondary">Waiting for Approval</span>`
-        //                 }
-        //             }
-        //         }
-        //     });
-        // } else {
+        if (req.user.role === "student") {
+            // const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
+            const events = await Event.find().populate("reservers").lean();
+            events.forEach(event => event.userID = req.user._id);
+            // const articles = await Article.find({ author: req.user._id }).populate("author").lean();
+            res.render("student/dashboard", {
+                user: req.user,
+                events,
+                // articles,
+                script: "./student/dashboard.js",
+                helpers: {
+                    reservationStatus(reservers) {
+                        return reservationStatusHelper(reservers)
+                    },
+                    formatDate(date) {
+                        return formatDateHelper(date)
+                    },
+                    formatTime(time) {
+                        return formatTimeHelper(time)
+                    },
+                    isCurrentUserReserved(reservers, currentUserID, eventID) {
+                        return isCurrentUserReservedHelper(reservers, currentUserID, eventID)
+                    },
+                    listofReservers(reservers, currentUserID, eventID) {
+                        return listofReserversHelper({ reservers, currentUserID, eventID })
+                    },
+                    formatToList(paragraph) {
+                        return formatToListHelper(paragraph)
+                    },
+                    approvedRejected(isApproved, isRejected) {
+                        // if (!isApproved) { return `<span class="badge bg-secondary">Waiting for Approval</span>` }
+                        if (isRejected) {
+                            return `<span class="badge bg-danger">Rejected</span>`
+                        } else if (isApproved) {
+                            return `<span class="badge bg-success">Published</span>` 
+                        } else {
+                            return `<span class="badge bg-secondary">Waiting for Approval</span>`
+                        }
+                    }
+                }
+            });
+        } else {
             const events = await Event.find().sort({ date: -1 }).lean();
             const user = await User.findById(req.user._id);
-            // const user = await User.findById('644bed814b982b38172317c8');
             const articles = await Article.find({ isApproved: false }).populate("author").lean();
             res.render("admin/dashboard", { user, admin: true, events, articles, script: "./admin/dashboard.js" });
-        // }
+        }
     } catch(err) { next(err) }
 
 });
@@ -225,18 +223,18 @@ app.get("/ces", (req, res) => {
 
 app.get('/pagenotfound', (req, res) => {
     res.render('pagenotfound');
-})
+});
 
 // Handles non-existing route
-// app.use((req, res, next) => {
-//     res.status(404).redirect('/pagenotfound');
-//     next();
-// });
+app.use((req, res, next) => {
+    res.status(404).redirect('/pagenotfound');
+    next();
+});
   
 // Error handler middleware
 app.use((err, req, res, next) => {
     console.log(err)
-    res.render('error', { err })
+    res.status(500).render('error', { err })
 });
 
 const PORT = process.env.PORT || 1000;

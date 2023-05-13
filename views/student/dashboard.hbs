@@ -4,7 +4,7 @@
 
 <div class="row gap-5">
     {{#each events}}
-        <div class="secondary-bg-color p-4 rounded col-lg-5">
+        <div class="secondary-bg-color p-4 rounded col-lg-5 event">
             <div class="d-flex justify-content-end">
                 {{!-- <span class="badge bg-success">Ongoing Reservation</span> --}}
                 {{{reservationStatus this.reservers}}}
@@ -19,7 +19,7 @@
                 <div class="d-flex gap-3">
                     {{{isCurrentUserReserved this.reservers this.userID this._id}}}
 
-                    {{> eventDetail}}
+                    {{> eventDetailModal}}
                 </div>
                 <span ><i class="bi bi-people-fill"></i> {{this.reservers.length}} / 60</span>
             </div>
