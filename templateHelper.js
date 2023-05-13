@@ -9,16 +9,13 @@ const reservationStatusHelper = reservers => {
 const formatDateHelper = date => {
     const dateTime = new Date(date);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    // const formattedDateandTime = `${months[dateTime.getMonth()]} ${dateTime.getDate()}, ${dateTime.getFullYear()} | ${dateTime.getHours() > 12 ? dateTime.getHours() - 12 : dateTime.getHours()}:${dateTime.getMinutes() === 0? `0${dateTime.getMinutes()}` : dateTime.getMinutes()} ${dateTime.getHours() < 12 ? "am" : "pm"}`;
+
     const formattedDate = `${months[dateTime.getMonth()]} ${dateTime.getDate()}, ${dateTime.getFullYear()}`;
-    // return formattedDateandTime
     return formattedDate
-    // console.log(formattedDate)
 };
 
 const formatTimeHelper = time => {
     if (time) {
-        // console.log(Number(time.split(":")[0]) < 12 ? `${time} am`: `${Number(time.split(":")[0]) - 12}:${time.split(":")[1]} pm`)
         return Number(time.split(":")[0]) < 12 ? `${time} am`: `${Number(time.split(":")[0]) - 12}:${time.split(":")[1]} pm`;
     }
 };
@@ -26,8 +23,7 @@ const formatTimeHelper = time => {
 const isCurrentUserReservedHelper = (reservers, currentUserID, eventID) => {
     const reserversIDs = reservers.map(reserver => reserver._id);
     const isIDinArray = reserversIDs.some(id => id.toString() === currentUserID.toString());
-    // console.log(reservers.length === 3)
-    // if (!isIDinArray) {
+    
     if (!isIDinArray && reservers.length !== 60) {
         return `
         <form action="/event/${eventID}/reserver?_method=PUT" method="post">
@@ -45,7 +41,23 @@ const isCurrentUserReservedHelper = (reservers, currentUserID, eventID) => {
 // const listofReserversHelper = (reservers, currentUserID = null, eventID) => {
 const listofReserversHelper = ({reservers, currentUserID, eventID}) => {
     // return { reservers, eventID, currentUserID }
-    if (currentUserID !== undefined) {
+    if (currentUserID === undefined) {
+        return reservers.map(reserver => {
+            return `
+                <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center" data-reserverid="${reserver._id}">
+                    ${reserver.firstname} ${reserver.lastname}
+                    <div class="d-flex align-items-center gap-1">
+                        <button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>
+                        <button type="button" class="btn btn-sm btn-danger addAbsenteeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/absentee" data-reserverid="${reserver._id}">ABSENT</button>
+                        <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
+                            <input type="hidden" name="userID" value="${reserver._id}">
+                            <button type="submit" class="btn text-danger p-0"><i class="bi bi-x fs-5"></i></button>
+                        </form>
+                    </div>
+                </li>
+            `
+        }).join(" ");        
+    } else {
         return reservers.map(reserver => {
             if (reserver._id.toString() === currentUserID.toString()) {
                 return `
@@ -65,27 +77,6 @@ const listofReserversHelper = ({reservers, currentUserID, eventID}) => {
                 `;
             }
         }).join("");
-    } else {
-        return reservers.map(reserver => {
-            return `
-                <li class="list-group-item secondary-bg-color text-white text-capitalize d-flex justify-content-between align-items-center" data-reserverid="${reserver._id}">
-                    ${reserver.firstname} ${reserver.lastname}
-                    <div class="d-flex align-items-center gap-1">
-                        <!--<button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="http://localhost:1000/api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>-->
-                        <button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>
-                        <button type="button" class="btn btn-sm btn-danger addAbsenteeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/absentee" data-reserverid="${reserver._id}">ABSENT</button>
-                        <!--<form action="#" method="post">
-                        <input type="hidden" name="userID" value="${reserver._id}">
-                        <button type="submit" class="btn btn-sm btn-danger">ABSENT</button>
-                        </form>-->
-                        <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
-                            <input type="hidden" name="userID" value="${reserver._id}">
-                            <button type="submit" class="btn text-danger p-0"><i class="bi bi-x fs-5"></i></button>
-                        </form>
-                    </div>
-                </li>
-            `
-        }).join(" ");
     }
 };
 
@@ -105,3 +96,10 @@ module.exports = {
     listofReserversHelper,
     formatToListHelper
 }
+
+// <!--<button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="http://localhost:1000/api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>-->
+
+// <!--<form action="#" method="post">
+// <input type="hidden" name="userID" value="${reserver._id}">
+// <button type="submit" class="btn btn-sm btn-danger">ABSENT</button>
+// </form>-->

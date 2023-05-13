@@ -4,13 +4,11 @@
         <p class="text-end" id="usersCount">{{users.length}}</p>
         <ul class="list-group gap-2" id="userList">
             {{#each users}}
-                <li class="list-group-item text-capitalize secondary-bg-color text-white" data-id="{{this._id}}" data-name="{{this.firstname}} {{this.lastname}}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        {{this.firstname}} {{this.lastname}}
-                        <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn p-0 editUserBtn" data-url="/api/users/{{this._id}}"><i class="bi bi-pencil-fill text-warning"></i></button>
-                            <button type="button" class="btn p-0 deleteUserBtn" data-url="/api/users/{{this._id}}"><i class="bi bi-trash3-fill text-danger"></i></button>
-                        </div>
+                <li class="list-group-item text-capitalize secondary-bg-color text-white d-flex justify-content-between align-items-center" data-id="{{this._id}}" data-name="{{this.firstname}} {{this.lastname}}">
+                    {{this.firstname}} {{this.lastname}}
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn p-0 editUserBtn" data-url="/api/users/{{this._id}}"><i class="bi bi-pencil-fill text-warning"></i></button>
+                        <button type="button" class="btn p-0 deleteUserBtn" data-url="/api/users/{{this._id}}"><i class="bi bi-trash3-fill text-danger"></i></button>
                     </div>
                 </li>
             {{/each}}

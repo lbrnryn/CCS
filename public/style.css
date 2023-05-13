@@ -20,14 +20,6 @@ body { font-family: 'Poppins', sans-serif; }
     width: 2.5em;
 }
 
-#registerForm {
-    display: none;
-}
-
-/* .register-form {
-    display: none;
-} */
-
 .primary-font { font-family: 'Zen Dots', cursive; }
 .primary-bg-color { background-color: #0d1117; }
 .secondary-bg-color { background-color: #161b22; }

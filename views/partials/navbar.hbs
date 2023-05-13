@@ -15,7 +15,7 @@
                     <a href="/" class="nav-link text-white">Home</a>
                 {{/if}}
             </li>
-            <li class="nav-item">
+            {{!-- <li class="nav-item">
                 <a href="/articles" class="nav-link text-white">Articles</a>
             </li>
             <li class="nav-item">
@@ -26,7 +26,7 @@
             </li>
             <li class="nav-item">
                 <a href="/" class="nav-link text-white text-nowrap" title="Underconstruction">CCS Tech Guild</a>
-            </li>
+            </li> --}}
             {{#if admin}}
                 <li class="nav-item">
                     <a href="/users" class="nav-link text-white">Manage Users</a>
@@ -47,7 +47,7 @@
                                 {{!-- <form action="/logout" method="post">
                                     <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
                                 </form> --}}
-                                <form action="/logout?_method=DELETE" method="post">
+                                <form action="/logout" method="post">
                                     <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
                                 </form>
                             </li>

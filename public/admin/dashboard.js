@@ -33,14 +33,7 @@ addEventForm.addEventListener("submit", async (e) => {
             </div>
         `;
 
-        title.value = "";
-        date.value = "";
-        time.value = "";
-        room.value = "";
-        description.value = "";
-        rationale.value = "";
-        objectives.value = "";
-        guidelines.value = "";
+        Array.from(addEventForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
         editEventUrl = undefined;
         submitEventBtn.innerText = "Submit";
     
@@ -73,15 +66,8 @@ addEventForm.addEventListener("submit", async (e) => {
             </div>
         `;
         eventList.appendChild(li);
-    
-        title.value = "";
-        date.value = "";
-        time.value = "";
-        room.value = "";
-        description.value = "";
-        rationale.value = "";
-        objectives.value = "";
-        guidelines.value = "";
+        
+        Array.from(addEventForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
     
         bootstrap.Modal.getInstance(addEventModal).hide();
     }
@@ -119,15 +105,8 @@ eventList.addEventListener("click", async (e) => {
     
             deleteEventBtn.parentElement.parentElement.remove();
             await fetch(url, { method: "DELETE" });
-    
-            title.value = "";
-            date.value = "";
-            time.value = "";
-            room.value = "";
-            description.value = "";
-            rationale.value = "";
-            objectives.value = "";
-            guidelines.value = "";
+            
+            Array.from(addEventForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
             editEventUrl = undefined;
             submitEventBtn.innerText === "Submit";
         }
@@ -135,13 +114,5 @@ eventList.addEventListener("click", async (e) => {
 
 });
 
-addEventModal.addEventListener("hidden.bs.modal", (e) => {
-    title.value = "";
-    date.value = "";
-    time.value = "";
-    room.value = "";
-    description.value = "";
-    rationale.value = "";
-    objectives.value = "";
-    guidelines.value = "";
-});
+addEventModal.addEventListener('hidden.bs.modal', (e) => Array.from(addEventForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = ''));
+

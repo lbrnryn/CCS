@@ -1,52 +1,86 @@
-<button type="button" class="border-0 bg-transparent text-white d-flex align-items-center gap-3" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="bi bi-box-arrow-in-right fs-2"></i><span class="d-sm-block d-md-block d-lg-none d-xl-none d-xxl-none">Login/Register</span></button>
+<button type="button" class="border-0 bg-transparent text-white d-flex align-items-center gap-3" data-bs-toggle="modal" data-bs-target="#loginRegisterModal"><i class="bi bi-box-arrow-in-right fs-2"></i><span class="d-sm-block d-md-block d-lg-none d-xl-none d-xxl-none">Login/Register</span></button>
 
-<div class="modal fade mt-5" id="loginModal">
+<div class="modal fade mt-5" id="loginRegisterModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body primary-bg-color rounded">
-                <form action="/login" id="loginForm" method="POST">
+                {{!-- <form action="/login" id="loginForm" method="POST"> --}}
+                <form class="needs-validation" id="loginForm" method="POST" novalidate>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control border-0" id="loginUsername" name="username" placeholder="username" required>
                         <label for="loginUsername" class="text-white">Username</label>
+                        <div class="invalid-feedback">Username is required</div>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control border-0" id="loginPassword" name="password" placeholder="password" required>
                         <label for="loginPassword" class="text-white">Password</label>
+                        <div class="invalid-feedback">Password is required</div>
                     </div>
                     <div class="d-flex justify-content-around">
                         <button type="submit" class="btn btn-sm btn-dark">Login</button>
-                        <button type="button" class="btn btn-sm btn-dark">Sign Up</button>
+                        <button type="button" class="btn btn-sm btn-dark" id="showRegisterFormBtn">Sign Up</button>
                     </div>
                 </form>
 
-                <form action="/register" id="registerForm" method="POST">
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control border-0" id="email" name="email" placeholder="email" required>
-                        <label for="email" class="text-white">Email</label>
+                {{!-- <form action="/register" class="d-none needs-validation" id="registerForm" method="POST" novalidate> --}}
+                <form class="d-none needs-validation" id="registerForm" method="POST" novalidate>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                {{!-- <input type="text" class="form-control border-0" id="firstname" name="firstname" placeholder="firstname" required> --}}
+                                <input type="text" class="form-control border-0" id="firstname" placeholder="firstname" required>
+                                <label for="firstname" class="text-white">Firstname</label>
+                                <div class="invalid-feedback">Firstname is required</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                {{!-- <input type="text" class="form-control border-0" id="lastname" name="lastname" placeholder="lastname" required> --}}
+                                <input type="text" class="form-control border-0" id="lastname" placeholder="lastname" required>
+                                <label for="lastname" class="text-white">Lastname</label>
+                                <div class="invalid-feedback">Lastname is required</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control border-0" id="registerFirstname" name="firstname" placeholder="firstname" required>
-                        <label for="registerFirstname" class="text-white">Firstname</label>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                {{!-- <input type="email" class="form-control border-0" id="email" name="email" placeholder="email" required> --}}
+                                <input type="email" class="form-control border-0" id="email" placeholder="email" required>
+                                <label for="email" class="text-white">Email</label>
+                                <div class="invalid-feedback">Email is required</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating mb-3">
+                                {{!-- <input type="text" class="form-control border-0" id="idNumber" name="idNumber" placeholder="idNumber" required> --}}
+                                <input type="text" class="form-control border-0" id="idNumber" placeholder="idNumber" required>
+                                <label for="idNumber" class="text-white">ID No.</label>
+                                <div class="invalid-feedback">ID No. is required</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control border-0" id="registerLastname" name="lastname" placeholder="lastname" required>
-                        <label for="registerLastname" class="text-white">Lastname</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control border-0" id="registerIdNumber" name="idNumber" placeholder="idNumber" required>
-                        <label for="registerIdNumber" class="text-white">ID No.</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control border-0" id="registerUsername" name="username" placeholder="username" required>
-                        <label for="loginUsername" class="text-white">Username</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control border-0" class="form-control" id="registerPassword" name="password" placeholder="password" required>
-                        <label for="loginPassword" class="text-white">Password</label>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                {{!-- <input type="text" class="form-control border-0" id="registerUsername" name="username" placeholder="username" required> --}}
+                                <input type="text" class="form-control border-0" id="registerUsername" placeholder="username" required>
+                                <label for="loginUsername" class="text-white">Username</label>
+                                <div class="invalid-feedback">Username is required</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                {{!-- <input type="password" class="form-control border-0" class="form-control" id="registerPassword" name="password" placeholder="password" required> --}}
+                                <input type="password" class="form-control border-0" class="form-control" id="registerPassword" placeholder="password" required>
+                                <label for="loginPassword" class="text-white">Password</label>
+                                <div class="invalid-feedback">Password is required</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-around">                          
                         <button type="submit" class="btn btn-sm btn-dark" id="registerSubmitBtn">Sign Up</button>
-                        <button type="button" class="btn btn-sm btn-dark">Login Instead</button>
+                        <button type="button" class="btn btn-sm btn-dark" id="showLoginFormBtn">Login Instead</button>
                     </div>
                 </form>
             </div>

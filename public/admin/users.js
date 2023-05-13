@@ -32,12 +32,8 @@ userForm.addEventListener("submit", async (e) => {
         </div>
     `;
 
-    editUserUrl = "";
-    idNumber.value = "";
-    firstname.value = "";
-    lastname.value = "";
-    username.value = "";
-    email.value = "";
+    editUserUrl = '';
+    Array.from(userForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
     submitEditUserBtn.disabled = true;
     submitEditUserBtn.innerText = "Submit";
     cancelEditUserBtn.classList.add("d-none");
@@ -64,11 +60,7 @@ userList.addEventListener("click", async (e) => {
 
     if (e.target.parentElement.classList.contains("deleteUserBtn")) {
         editUserUrl = undefined;
-        idNumber.value = "";
-        firstname.value = "";
-        lastname.value = "";
-        username.value = "";
-        email.value = "";
+        Array.from(userForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
         submitEditUserBtn.disabled = true;
         submitEditUserBtn.innerText = "Submit";
         !cancelEditUserBtn.classList.contains("d-none") && cancelEditUserBtn.classList.add("d-none");
@@ -84,11 +76,7 @@ userList.addEventListener("click", async (e) => {
 
 cancelEditUserBtn.addEventListener("click", () => {
     editUserUrl = undefined;
-    idNumber.value = "";
-    firstname.value = "";
-    lastname.value = "";
-    username.value = "";
-    email.value = "";
+    Array.from(userForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
     submitEditUserBtn.disabled = true;
     submitEditUserBtn.innerText = "Submit";
     cancelEditUserBtn.classList.add("d-none");

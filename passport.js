@@ -2,31 +2,20 @@ const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local");
 const User = require("./models/User");
 
-function passportAuth(passport) {
+module.exports = function (passport) {
     passport.use(new LocalStrategy(async (username, password, done) => {
-        // console.log(username, password)
         const user = await User.findOne({username: username});
-        // console.log(user)
-        if (!user) {
-            // console.log("No user found")
-            return done(null, false, { message: "No User Found" });
-        }
-        // console.log(password, typeof password)
-        // console.log(user.password, typeof user.password)
+        // console.log('passport', user)
+        if (!user) { return done(null, false, { message: "No User Found" }) }
         const isMatch = await bcrypt.compare(password, user.hashedPassword);
-        // console.log(isMatch)
-        if (!isMatch) {
-          return done(null, false, { message: 'Incorrect password' });
-        }
+        if (!isMatch) { return done(null, false, { message: 'Incorrect password' }) }
         return done(null, user, { message: `Welcome ${user.username}` });
+        // return done(null, user);
     }));
     
-    passport.serializeUser((user, done) => {
+    passport.serializeUser((user, done) => done(null, user._id));
+    passport.deserializeUser(async (id, done) => {
+        const user = await User.findById(id);
         done(null, user)
-    })
-    passport.deserializeUser((user, done) => {
-        done(null, user)
-    })
+    });
 }
-
-module.exports = passportAuth;
