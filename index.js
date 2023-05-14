@@ -80,7 +80,7 @@ app.get("/", async (req, res, next) => {
 
 app.get("/users", async (req, res, next) => {
     try {
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user._id).lean();
         const users = await User.find().lean();
         res.render("users", { users, user, script: "./admin/users.js" })
     } catch(err) { next(err) }
@@ -139,20 +139,20 @@ app.post("/logout", (req, res, next) => {
     });
 });
 
-app.get("/profile", checkAuthenticated, async (req, res, next) => {
-    try {
-        const user = await User.findById(req.user._id).lean();
-        res.render("profile", { user });
-    } catch(err) { next(err) }
-});
-
-app.put("/profile", checkAuthenticated, async (req, res, next) => {
-    try {
-        const updUser = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
-        req.flash("success_msg", "Profile has been updated");
-        res.redirect("/profile");
-    } catch(err) { next(err) }
-});
+app.route('/profile')
+    .get(checkAuthenticated, async (req, res, next) => {
+        try {
+            const user = await User.findById(req.user._id).lean();
+            res.render("profile", { user });
+        } catch(err) { next(err) }
+    })
+    .put(checkAuthenticated, async (req, res, next) => {
+        try {
+            const updUser = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+            req.flash("success_msg", "Profile has been updated");
+            res.redirect("/profile");
+        } catch(err) { next(err) }
+    })
 
 app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
 // app.get("/dashboard", async (req, res, next) => {
@@ -208,13 +208,6 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
         }
     } catch(err) { next(err) }
 
-});
-
-app.get("/api/event/:id", async (req, res, next) => {
-    try {
-        const event = await Event.findById(req.params.id);
-        res.json(event)
-    } catch (err) { next(err) }
 });
 
 app.get("/ces", (req, res) => {

@@ -12,20 +12,28 @@ router.post("/", async (req, res, next) => {
     } catch(err) { next(err) }
 });
 
-// Update event - PUT /api/event
-router.put("/:id", async (req, res, next) => {
-    try {
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.json(updEvent)
-    } catch(err) { next(err) }
-});
-
-// Delete event - DELETE /api/event
-router.delete("/:id", async (req, res, next) => {
-    try {
-        await Event.findByIdAndDelete(req.params.id);
-    } catch(err) { next(err) }
-});
+// /api/event/:id
+router.route('/:id')
+    // Get an event
+    .get(async (req, res, next) => {
+        try {
+            const event = await Event.findById(req.params.id);
+            res.json(event)
+        } catch (err) { next(err) }
+    })
+    // Update an event
+    .put(async (req, res, next) => {
+        try {
+            const updEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            res.json(updEvent)
+        } catch(err) { next(err) }
+    })
+    // Delete an event
+    .delete(async (req, res, next) => {
+        try {
+            await Event.findByIdAndDelete(req.params.id);
+        } catch(err) { next(err) }
+    });
 
 // PUT /api/event/:id/attendee - Add attendees in event 
 router.put("/:id/attendee", async (req, res, next) => {
@@ -57,35 +65,35 @@ router.put("/:id/absentee", async (req, res, next) => {
     } catch(err) { next(err) }
 });
 
-// PUT /api/event/:id/reserver - Add reservers in event 
-router.put("/:id/reserver", async (req, res, next) => {
-    try {
-        const { userID } = req.body;
-        const user = await User.findById(userID);
-        const updEvent = await Event.findByIdAndUpdate(req.params.id, {
-            $push: { reservers: userID }
-        }, { new: true });
-        // res.json(updEvent);
-        res.json({ updEvent, user })
-        // req.flash("success_msg", "You successfully reserved a seat")
-    } catch(err) { next(err) }
-});
+// /api/event/:id/reserver
+router.route('/:id/reserver')
+    // Add reservers in event
+    .put(async (req, res, next) => {
+        try {
+            const { userID } = req.body;
+            const user = await User.findById(userID);
+            const updEvent = await Event.findByIdAndUpdate(req.params.id, {
+                $push: { reservers: userID }
+            }, { new: true });
+            res.json({ updEvent, user })
+            // req.flash("success_msg", "You successfully reserved a seat")
+        } catch(err) { next(err) }
+    })
+    // Remove reservers in event
+    .delete(async (req, res, next) => {
+        try {
+            const { userID } = req.body;
+            await Event.findByIdAndUpdate(req.params.id, {
+                $pull: { reservers: userID }
+            }, { new: true });
 
-// DELETE /api/event/:id/reserver - Remove reservers in event 
-router.delete("/:id/reserver", async (req, res, next) => {
-    try {
-        const { userID } = req.body;
-        await Event.findByIdAndUpdate(req.params.id, {
-            $pull: { reservers: userID }
-        }, { new: true });
-
-        // if (url.parse(req.headers.referer).pathname === "/dashboard") {
-        //     req.flash("error_msg", "Your seat reservation is now cancelled")
-        //     res.redirect("/dashboard");
-        // } else {
-        //     res.redirect(`/event/${req.params.id}`);
-        // }
-    } catch (err) { next(err) }
-});
+            // if (url.parse(req.headers.referer).pathname === "/dashboard") {
+            //     req.flash("error_msg", "Your seat reservation is now cancelled")
+            //     res.redirect("/dashboard");
+            // } else {
+            //     res.redirect(`/event/${req.params.id}`);
+            // }
+        } catch (err) { next(err) }
+    })
 
 module.exports = router;
