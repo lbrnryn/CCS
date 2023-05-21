@@ -28,6 +28,8 @@ events.forEach(event => {
             `;
             reserversList.appendChild(li);
 
+            reservedSeatBtn.dataset.url = '';
+            reservedSeatBtn.dataset.userid = '';
             reservedSeatBtn.disabled = true;
             reservedSeatBtn.innerText = 'You are now on the list';
         }

@@ -40,10 +40,7 @@ const listofReserversHelper = ({reservers, currentUserID, eventID}) => {
                     <div class="d-flex align-items-center gap-1">
                         <button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>
                         <button type="button" class="btn btn-sm btn-danger addAbsenteeBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/absentee" data-reserverid="${reserver._id}">ABSENT</button>
-                        <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
-                            <input type="hidden" name="userID" value="${reserver._id}">
-                            <button type="submit" class="btn text-danger p-0"><i class="bi bi-x fs-5"></i></button>
-                        </form>
+                        <button type="button" class="btn btn-sm btn-danger deleteReserverBtn" data-url="${process.env.NODE_ENV === "development" ? "http://localhost:1000/" : "https://ccs-icct-tech-guild.onrender.com/"}api/event/${eventID}/reserver" data-reserverid="${reserver._id}">DELETE</button>
                     </div>
                 </li>
             `
@@ -79,21 +76,8 @@ module.exports = {
     formatToListHelper
 }
 
-{/* <form id='reservedSeatForm'>
-    <input type="hidden" id="eventID" value="${eventID}">
-    <input type="hidden" id="userID" value="${currentUserID}">
-    <button type="submit" class="btn btn-sm btn-warning">Reserved a seat</button>
-</form> */}
 
-// <!--<button type="button" class="btn btn-sm btn-primary addAttendeeBtn" data-url="http://localhost:1000/api/event/${eventID}/attendee" data-reserverid="${reserver._id}">PRESENT</button>-->
-
-// <!--<form action="#" method="post">
-// <input type="hidden" name="userID" value="${reserver._id}">
-// <button type="submit" class="btn btn-sm btn-danger">ABSENT</button>
-// </form>-->
-
-{/* <form class='cancelReservedSeatForm'>
-    <input type="hidden" name="eventID" value="${eventID}">
+{/* <form action="/event/${eventID}/reserver?_method=DELETE" method="post">
     <input type="hidden" name="userID" value="${reserver._id}">
-    <button type="submit" class="badge bg-danger border-0">Cancel Reservation</button>
+    <button type="submit" class="btn text-danger p-0"><i class="bi bi-x fs-5"></i></button>
 </form> */}

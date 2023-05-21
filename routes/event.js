@@ -10,7 +10,7 @@ const checkAuthenticated = require("../middleware.js");
 router.route("/:id")
     .get(checkAuthenticated, async (req, res, next) => {
         try {
-            const user = await User.findById(req.user._id);
+            const user = await User.findById(req.user._id).lean();
             const event = await Event.findById(req.params.id).populate("reservers").populate("attendees").populate("absentees").lean();
             res.render("event", {
                 user,

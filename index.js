@@ -42,7 +42,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: new MongoDBStore({
-        uri: "mongodb://127.0.0.1:27017/ccs" || process.env.MONGO_URI,
+        // uri: "mongodb://127.0.0.1:27017/ccs" || process.env.MONGO_URI,
+        uri: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ccs",
         collection: "sessions"
     })
 }));
@@ -149,23 +150,22 @@ app.route('/profile')
     .put(checkAuthenticated, async (req, res, next) => {
         try {
             const updUser = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
-            req.flash("success_msg", "Profile has been updated");
-            res.redirect("/profile");
+            res.json(updUser);
+            // req.flash("success_msg", "Profile has been updated");
         } catch(err) { next(err) }
     })
 
 app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
-// app.get("/dashboard", async (req, res, next) => {
     try {
-        // console.log('req.isAuthenticated', req.isAuthenticated())
-        // console.log('dashboard', req.user)
         if (req.user.role === "student") {
             // const events = await Event.find({ date: { $gte: new Date() } }).populate("reservers").lean();
             const events = await Event.find().populate("reservers").lean();
             events.forEach(event => event.userID = req.user._id);
             // const articles = await Article.find({ author: req.user._id }).populate("author").lean();
+            const user = await User.findById(req.user._id).lean();
             res.render("student/dashboard", {
-                user: req.user,
+                // user: req.user,
+                user,
                 events,
                 // articles,
                 script: "./student/dashboard.js",
@@ -202,7 +202,7 @@ app.get("/dashboard", checkAuthenticated, async (req, res, next) => {
             });
         } else {
             const events = await Event.find().sort({ date: -1 }).lean();
-            const user = await User.findById(req.user._id);
+            const user = await User.findById(req.user._id).lean();
             const articles = await Article.find({ isApproved: false }).populate("author").lean();
             res.render("admin/dashboard", { user, admin: true, events, articles, script: "./admin/dashboard.js" });
         }

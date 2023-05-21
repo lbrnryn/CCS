@@ -40,18 +40,53 @@
                         </button>
                         <ul class="dropdown-menu secondary-bg-color">
                             <li>
-                                <a href="/profile" class="link-light text-decoration-none px-2">Profile</a>
+                                {{!-- <a href="/profile" class="link-light text-decoration-none px-2">Profile</a> --}}
+                                
+                                <button type="button" class="btn text-white ps-2" data-bs-toggle="modal" data-bs-target="#profileModal">Profile</button>
+
                             </li>
                             <li>
-                                {{!-- <a href="/logout" class="border-0 bg-transparent text-danger">Logout</a> --}}
-                                {{!-- <form action="/logout" method="post">
-                                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
-                                </form> --}}
                                 <form action="/logout" method="post">
-                                    <button type="submit" class="border-0 bg-transparent text-danger">Logout</button>
+                                    <button type="submit" class="border-0 bg-transparent text-danger ps-2">Logout</button>
                                 </form>
                             </li>
                         </ul>
+                        <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body secondary-bg-color">
+                                        <form class="d-grid gap-2 needs-validation" id="userProfileForm" novalidate>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="firstname" class="form-label">Firstname</label>
+                                                    <input type="text" class="form-control form-control-sm bg-transparent border-0" id="firstname" value="{{user.firstname}}" required disabled>
+                                                    <div class="invalid-feedback">Firstname is required</div>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="lastname" class="form-label">Lastname</label>
+                                                    <input type="text" class="form-control form-control-sm bg-transparent border-0" id="lastname" value="{{user.lastname}}" required disabled>
+                                                    <div class="invalid-feedback">Lastname is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="idNumber" class="form-label">ID No.</label>
+                                                    <input type="text" class="form-control form-control-sm bg-transparent border-0" id="idNumber" value="{{user.idNumber}}" required disabled>
+                                                    <div class="invalid-feedback">ID No. is required</div>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="username" class="form-label">Username</label>
+                                                    <input type="text" class="form-control form-control-sm bg-transparent border-0" id="username" value="{{user.username}}" required disabled>
+                                                    <div class="invalid-feedback">Username is required</div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-primary d-none" id="userProfileSubmitBtn">Submit</button>
+                                            <button type="button" class="btn btn-sm btn-primary" id="userProfileEditBtn">Edit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {{else}}
                     {{> login-register-modal}}
@@ -60,3 +95,4 @@
         </div>
     </div>
 </nav>
+
