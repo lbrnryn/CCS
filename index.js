@@ -43,7 +43,7 @@ app.use(session({
     saveUninitialized: false,
     store: new MongoDBStore({
         // uri: "mongodb://127.0.0.1:27017/ccs" || process.env.MONGO_URI,
-        uri: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ccs",
+        uri: process.env.MONGO_URI,
         collection: "sessions"
     })
 }));
@@ -75,6 +75,7 @@ app.use(function (req, res, next) {
 
 app.get("/", async (req, res, next) => {
     try {
+        // console.log(process.env.MONGO_URI)
         res.render("home", { user: req.user ? req.user: false, script: './home.js' });
     } catch(err) { next(err) }
 });
