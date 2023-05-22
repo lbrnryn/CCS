@@ -42,8 +42,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: new MongoDBStore({
-        // uri: "mongodb://127.0.0.1:27017/ccs" || process.env.MONGO_URI,
-        uri: process.env.MONGO_URI,
+        uri: "mongodb://127.0.0.1:27017/ccs" || process.env.MONGO_URI,
+        // uri: process.env.MONGO_URI,
         collection: "sessions"
     })
 }));

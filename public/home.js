@@ -19,6 +19,13 @@ showLoginFormBtn.addEventListener('click', () => {
     loginForm.classList.remove('d-none');
 });
 
+loginRegisterModal.addEventListener('hidden.bs.modal', (e) => {
+    Array.from(loginForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
+    Array.from(registerForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
+    registerForm.classList.add('d-none');
+    loginForm.classList.remove('d-none');
+});
+
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -32,23 +39,31 @@ loginForm.addEventListener('submit', async (e) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    username: loginUsername.value,
+                    username: loginUsername.value.trim(),
                     password: loginPassword.value
                 })
             });
+            const data = await res.json();
+            // console.log(data);
             
             if (res.ok) {
-                const data = await res.json();
-                console.log(data);
                 location.href = data.redirectUrl;
             } else if (res.status === 401) {
-                throw '401 Unauthorized';
+                throw data.message;
             } else {
-                throw 'Error' + res.status;
+                throw data.message;
             }
-    
         }
-    } catch(err) { console.log(err) }
+    } catch(err) {
+        console.log(err);
+        bootstrap.Modal.getInstance(loginRegisterModal).hide();
+        const div = document.createElement('div');
+        div.className = 'toast show position-fixed bottom-0 end-0 bg-danger text-white m-2';
+        div.innerHTML = `<div class='toast-body'>${err}</div>`;
+        body.appendChild(div);
+        Array.from(loginForm.elements).filter(element => element.tagName !== 'BUTTON').forEach(element => element.value = '');
+        setTimeout(() => div.remove(), 1500);
+    }
 });
 
 registerForm.addEventListener('submit', async (e) => {
